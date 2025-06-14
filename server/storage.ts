@@ -1,4 +1,6 @@
 import { industries, assessments, configuration, type Industry, type InsertIndustry, type Assessment, type InsertAssessment, type Configuration, type InsertConfiguration } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // Industries
@@ -20,98 +22,49 @@ export interface IStorage {
   updateConfiguration(key: string, value: string): Promise<Configuration | undefined>;
 }
 
-export class MemStorage implements IStorage {
-  private industries: Map<number, Industry>;
-  private assessments: Map<number, Assessment>;
-  private configuration: Map<string, Configuration>;
-  private currentIndustryId: number;
-  private currentAssessmentId: number;
-  private currentConfigId: number;
-
-  constructor() {
-    this.industries = new Map();
-    this.assessments = new Map();
-    this.configuration = new Map();
-    this.currentIndustryId = 1;
-    this.currentAssessmentId = 1;
-    this.currentConfigId = 1;
-
-    // Initialize with default industries
-    this.initializeDefaultData();
-  }
-
-  private initializeDefaultData() {
-    // Default industries based on UAE emiratisation requirements
-    const defaultIndustries = [
-      { name: "Banking & Finance", emiratisationRate: 0.04, riskMultiplier: 2.5 },
-      { name: "Insurance", emiratisationRate: 0.05, riskMultiplier: 2.0 },
-      { name: "Telecommunications", emiratisationRate: 0.02, riskMultiplier: 1.5 },
-      { name: "Oil & Gas", emiratisationRate: 0.04, riskMultiplier: 3.0 },
-      { name: "Construction", emiratisationRate: 0.02, riskMultiplier: 1.8 },
-      { name: "Retail", emiratisationRate: 0.01, riskMultiplier: 1.2 },
-      { name: "Healthcare", emiratisationRate: 0.03, riskMultiplier: 2.2 },
-      { name: "Education", emiratisationRate: 0.02, riskMultiplier: 1.6 },
-    ];
-
-    defaultIndustries.forEach(industry => {
-      const id = this.currentIndustryId++;
-      this.industries.set(id, { ...industry, id, isActive: true });
-    });
-
-    // Default configuration
-    const defaultConfig = [
-      { key: "low_risk_threshold", value: "25", description: "Low risk threshold percentage" },
-      { key: "medium_risk_threshold", value: "50", description: "Medium risk threshold percentage" },
-      { key: "high_risk_threshold", value: "75", description: "High risk threshold percentage" },
-      { key: "base_fine", value: "30000", description: "Base fine amount in AED" },
-      { key: "freezone_reduction", value: "0.25", description: "Freezone fine reduction percentage" },
-    ];
-
-    defaultConfig.forEach(config => {
-      const id = this.currentConfigId++;
-      this.configuration.set(config.key, { ...config, id });
-    });
-  }
-
+export class DatabaseStorage implements IStorage {
   async getIndustries(): Promise<Industry[]> {
-    return Array.from(this.industries.values()).filter(industry => industry.isActive);
+    return await db.select().from(industries).where(eq(industries.isActive, true));
   }
 
   async getIndustry(id: number): Promise<Industry | undefined> {
-    return this.industries.get(id);
+    const [industry] = await db.select().from(industries).where(eq(industries.id, id));
+    return industry || undefined;
   }
 
   async createIndustry(insertIndustry: InsertIndustry): Promise<Industry> {
-    const id = this.currentIndustryId++;
-    const industry: Industry = { ...insertIndustry, id, isActive: true };
-    this.industries.set(id, industry);
+    const [industry] = await db
+      .insert(industries)
+      .values(insertIndustry)
+      .returning();
     return industry;
   }
 
   async updateIndustry(id: number, updates: Partial<InsertIndustry>): Promise<Industry | undefined> {
-    const existing = this.industries.get(id);
-    if (!existing) return undefined;
-    
-    const updated = { ...existing, ...updates };
-    this.industries.set(id, updated);
-    return updated;
+    const [industry] = await db
+      .update(industries)
+      .set(updates)
+      .where(eq(industries.id, id))
+      .returning();
+    return industry || undefined;
   }
 
   async deleteIndustry(id: number): Promise<boolean> {
-    const existing = this.industries.get(id);
-    if (!existing) return false;
-    
-    // Soft delete by setting isActive to false
-    this.industries.set(id, { ...existing, isActive: false });
-    return true;
+    const [industry] = await db
+      .update(industries)
+      .set({ isActive: false })
+      .where(eq(industries.id, id))
+      .returning();
+    return !!industry;
   }
 
   async getAssessments(): Promise<Assessment[]> {
-    return Array.from(this.assessments.values());
+    return await db.select().from(assessments);
   }
 
   async getAssessment(id: number): Promise<Assessment | undefined> {
-    return this.assessments.get(id);
+    const [assessment] = await db.select().from(assessments).where(eq(assessments.id, id));
+    return assessment || undefined;
   }
 
   async createAssessment(insertAssessment: InsertAssessment): Promise<Assessment> {
@@ -125,8 +78,9 @@ export class MemStorage implements IStorage {
     const jurisdictionMultiplier = insertAssessment.jurisdiction === 'mainland' ? 1.0 : 0.75;
     const adjustedRate = industry.emiratisationRate * jurisdictionMultiplier;
     const requiredEmirates = Math.ceil(totalEmployees * adjustedRate);
+    const currentEmirates = insertAssessment.currentEmirates || 0;
     
-    const gap = insertAssessment.currentEmirates - requiredEmirates;
+    const gap = currentEmirates - requiredEmirates;
     const riskPercentage = Math.min(100, Math.max(0, (-gap / requiredEmirates) * 100));
     
     let riskLevel: string;
@@ -142,52 +96,58 @@ export class MemStorage implements IStorage {
     const jurisdictionFineMultiplier = insertAssessment.jurisdiction === 'mainland' ? 1.0 : (1.0 - frezoneReduction);
     const potentialFine = Math.abs(gap) * baseFineAmount * jurisdictionFineMultiplier * industry.riskMultiplier;
 
-    const id = this.currentAssessmentId++;
-    const assessment: Assessment = {
-      ...insertAssessment,
-      id,
-      totalEmployees,
-      requiredEmirates,
-      riskPercentage,
-      riskLevel,
-      potentialFine: Math.max(0, potentialFine),
-      createdAt: new Date().toISOString(),
-    };
+    const [assessment] = await db
+      .insert(assessments)
+      .values({
+        ...insertAssessment,
+        currentEmirates,
+        totalEmployees,
+        requiredEmirates,
+        riskPercentage,
+        riskLevel,
+        potentialFine: Math.max(0, potentialFine),
+        createdAt: new Date().toISOString(),
+      })
+      .returning();
 
-    this.assessments.set(id, assessment);
     return assessment;
   }
 
   async getConfiguration(): Promise<Configuration[]> {
-    return Array.from(this.configuration.values());
+    return await db.select().from(configuration);
   }
 
   async getConfigurationByKey(key: string): Promise<Configuration | undefined> {
-    return this.configuration.get(key);
+    const [config] = await db.select().from(configuration).where(eq(configuration.key, key));
+    return config || undefined;
   }
 
   async setConfiguration(config: InsertConfiguration): Promise<Configuration> {
-    const existing = this.configuration.get(config.key);
+    const existing = await this.getConfigurationByKey(config.key);
     if (existing) {
-      const updated = { ...existing, ...config };
-      this.configuration.set(config.key, updated);
+      const [updated] = await db
+        .update(configuration)
+        .set(config)
+        .where(eq(configuration.key, config.key))
+        .returning();
       return updated;
     } else {
-      const id = this.currentConfigId++;
-      const newConfig: Configuration = { ...config, id };
-      this.configuration.set(config.key, newConfig);
+      const [newConfig] = await db
+        .insert(configuration)
+        .values(config)
+        .returning();
       return newConfig;
     }
   }
 
   async updateConfiguration(key: string, value: string): Promise<Configuration | undefined> {
-    const existing = this.configuration.get(key);
-    if (!existing) return undefined;
-    
-    const updated = { ...existing, value };
-    this.configuration.set(key, updated);
-    return updated;
+    const [updated] = await db
+      .update(configuration)
+      .set({ value })
+      .where(eq(configuration.key, key))
+      .returning();
+    return updated || undefined;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
