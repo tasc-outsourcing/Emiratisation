@@ -50,6 +50,8 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      companyLocation: undefined,
+      industrySector: "",
       totalEmployees: 1,
       skilledEmployees: 1,
       emiratiEmployees: 0,
@@ -61,7 +63,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
   });
 
   const watchedValues = form.watch();
-  const isRegulatedSector = REGULATED_SECTORS.includes(watchedValues.industrySector as any);
+  const isRegulatedSector = watchedValues.industrySector && REGULATED_SECTORS.includes(watchedValues.industrySector as any);
 
   const onSubmit = (data: FormData) => {
     onComplete(data);

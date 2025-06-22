@@ -1,70 +1,82 @@
-# UAE Emiratisation Risk Assessment Application
+# TASC Emiratisation Risk Assessment Tool
 
 ## Overview
-A comprehensive web application for assessing UAE emiratisation compliance risk. The system evaluates companies against emiratisation requirements based on industry, jurisdiction, and workforce composition, providing risk assessments, potential fine calculations, and compliance recommendations.
+A lead-generation microtool for TASC Outsourcing that calculates UAE Emiratisation compliance risk and potential fines under MoHRE 2025 regulations. The application captures company data, determines compliance gaps, assigns risk scores, and converts users through strategic call-to-action elements.
 
 ## Project Architecture
 
 ### Backend
 - **Framework**: Express.js with TypeScript
 - **Database**: PostgreSQL with Drizzle ORM
-- **Storage**: Migrated from in-memory to persistent database storage
-- **API**: RESTful endpoints for industries, assessments, configuration, and statistics
+- **Storage**: DatabaseStorage implementing IStorage interface
+- **API**: RESTful endpoints for assessments, configuration, and admin functions
+- **Webhooks**: Zapier integration for lead capture to HubSpot
 
 ### Frontend
 - **Framework**: React with TypeScript
 - **Routing**: Wouter for client-side navigation
 - **State Management**: TanStack Query for server state
-- **UI**: Shadcn/ui components with Tailwind CSS
+- **UI**: Shadcn/ui components with TASC custom branding
 - **Forms**: React Hook Form with Zod validation
 
 ### Database Schema
-- **Industries**: Configurable sectors with emiratisation rates and risk multipliers
-- **Assessments**: Company evaluations with calculated risk metrics
-- **Configuration**: System-wide settings for thresholds and fine structures
+- **Assessments**: Complete company evaluations with lead capture and calculated risk metrics
+- **Configuration**: Admin-configurable settings for emiratisation targets and fines
 
 ## Key Features
 
-### Risk Assessment
-- Company details form with industry selection
-- Real-time risk calculation based on workforce composition
-- Jurisdiction-specific adjustments (mainland vs freezone)
-- Visual risk indicators and recommendations
+### Risk Assessment Flow
+1. Company profile form (location, sector, workforce data)
+2. Emirati workforce details (compliance status, recent departures)
+3. Lead capture modal before results
+4. Comprehensive results display with risk scoring
+5. Three CTA cards (Book Call, Call Now, Download Guide)
 
-### Management Dashboard
-- Industry configuration with CRUD operations
-- Risk threshold management
-- Fine structure configuration
-- System statistics and reporting
+### Business Logic
+- **Emiratisation Requirements**: Based on location (freezone exempt), employee count thresholds, and sector designation
+- **Risk Calculation**: 100-point scale with gap penalties, compliance bonuses
+- **Fine Estimation**: AED 96,000 per missing Emirati with jurisdiction adjustments
+- **Risk Levels**: Low (71-100), Medium (41-70), High (0-40)
 
-### Risk Calculation Logic
-- Emiratisation rate adjusted by jurisdiction multiplier
-- Risk percentage based on Emirati employee gap
-- Potential fine calculation with industry and jurisdiction factors
-- Three-tier risk classification (low/medium/high)
+### Admin Panel
+- Password-protected admin access
+- Configuration management (target %, fine amounts)
+- Assessment statistics and analytics
+- Data export functionality
+- Real-time dashboard with sector breakdown
+
+## TASC Branding
+- **Colors**: Primary (#004267), Teal (#00A49E), Yellow (#FFC500), Light Blue (#007FAD), Green (#3EB54A)
+- **Typography**: Inter font family
+- **Components**: 12px border radius, 300px header height
+- **CTA Elements**: Yellow primary CTA, blue secondary buttons
 
 ## Recent Changes
 
-### December 14, 2024
-- **Database Migration**: Successfully migrated from in-memory storage to PostgreSQL
-  - Created database tables for industries, assessments, and configuration
-  - Implemented DatabaseStorage class replacing MemStorage
-  - Populated default data for industries and configuration
-  - Updated storage interface to use Drizzle ORM with proper error handling
+### December 22, 2024
+- **Initial Implementation**: Built complete TASC Emiratisation Risk Assessment Tool from specifications
+  - Implemented full assessment form with conditional logic
+  - Created lead capture modal with contact information collection
+  - Built comprehensive results display with TASC branding
+  - Added admin panel with authentication and configuration management
+  - Integrated database storage with PostgreSQL and Drizzle ORM
+  - Applied TASC brand guidelines throughout UI components
 
 ### Technical Implementation
-- Added database connection with Neon serverless PostgreSQL
-- Implemented proper type safety with Drizzle schema validation
-- Maintained existing API compatibility during storage migration
-- Enhanced error handling for database operations
+- Added MoHRE sector validation and regulated industry warnings
+- Implemented grace period logic for recent Emirati departures
+- Created webhook integration framework for HubSpot lead capture
+- Built risk calculation engine matching specification requirements
+- Added data export functionality for admin analytics
 
 ## Configuration
-- **Colors**: UAE-themed color palette with primary blue (#3B82F6)
-- **Typography**: Inter font family for modern, professional appearance
-- **Icons**: Lucide React for consistent iconography
-- **Responsive**: Mobile-first design with Tailwind CSS
+- **Emiratisation Target**: 8% default (admin configurable)
+- **Fine Structure**: AED 96,000 per missing Emirati (admin configurable)
+- **Regulated Sectors**: Banking, Insurance, Government (special handling)
+- **Admin Access**: Password protection via ADMIN_PASSWORD environment variable
 
 ## User Preferences
-- Prefers clear, direct communication
-- Values comprehensive solutions over partial implementations
-- Focuses on UAE-specific business requirements and compliance
+- Focus on UAE business compliance requirements
+- Prioritize lead generation and conversion optimization
+- Maintain TASC professional branding standards
+- Ensure accurate MoHRE regulation compliance calculations
