@@ -1,85 +1,65 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertIndustrySchema, insertAssessmentSchema, insertConfigurationSchema } from "@shared/schema";
+import { assessmentInputSchema, insertConfigurationSchema } from "@shared/schema";
 import { z } from "zod";
 
-const updateIndustrySchema = insertIndustrySchema.partial();
 const updateConfigSchema = z.object({
   key: z.string(),
   value: z.string(),
 });
 
+const adminAuthSchema = z.object({
+  password: z.string(),
+});
+
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Industries routes
-  app.get("/api/industries", async (req, res) => {
+  // Assessment routes
+  app.post("/api/assessments", async (req, res) => {
     try {
-      const industries = await storage.getIndustries();
-      res.json(industries);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch industries" });
-    }
-  });
-
-  app.get("/api/industries/:id", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const industry = await storage.getIndustry(id);
-      if (!industry) {
-        return res.status(404).json({ message: "Industry not found" });
-      }
-      res.json(industry);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch industry" });
-    }
-  });
-
-  app.post("/api/industries", async (req, res) => {
-    try {
-      const result = insertIndustrySchema.safeParse(req.body);
+      const result = assessmentInputSchema.safeParse(req.body);
       if (!result.success) {
-        return res.status(400).json({ message: "Invalid industry data", errors: result.error.issues });
+        return res.status(400).json({ 
+          message: "Invalid assessment data", 
+          errors: result.error.issues 
+        });
       }
       
-      const industry = await storage.createIndustry(result.data);
-      res.status(201).json(industry);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to create industry" });
-    }
-  });
-
-  app.put("/api/industries/:id", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const result = updateIndustrySchema.safeParse(req.body);
-      if (!result.success) {
-        return res.status(400).json({ message: "Invalid industry data", errors: result.error.issues });
+      const assessment = await storage.createAssessment(result.data);
+      
+      // Send to HubSpot/Zapier webhook (if configured)
+      if (process.env.ZAPIER_WEBHOOK_URL) {
+        try {
+          const webhookData = {
+            first_name: assessment.firstName,
+            last_name: assessment.lastName,
+            email: assessment.email,
+            phone: assessment.phone,
+            company: assessment.companyName,
+            emiratisation_gap: assessment.gap,
+            risk_score: assessment.riskScore,
+            risk_level: assessment.riskLevel,
+            fine_estimate: assessment.fineEstimate,
+          };
+          
+          await fetch(process.env.ZAPIER_WEBHOOK_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(webhookData),
+          });
+        } catch (webhookError) {
+          console.error("Webhook failed:", webhookError);
+          // Don't fail the assessment if webhook fails
+        }
       }
       
-      const industry = await storage.updateIndustry(id, result.data);
-      if (!industry) {
-        return res.status(404).json({ message: "Industry not found" });
-      }
-      res.json(industry);
+      res.status(201).json(assessment);
     } catch (error) {
-      res.status(500).json({ message: "Failed to update industry" });
+      console.error("Assessment creation failed:", error);
+      res.status(500).json({ message: "Failed to create assessment" });
     }
   });
 
-  app.delete("/api/industries/:id", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const success = await storage.deleteIndustry(id);
-      if (!success) {
-        return res.status(404).json({ message: "Industry not found" });
-      }
-      res.status(204).send();
-    } catch (error) {
-      res.status(500).json({ message: "Failed to delete industry" });
-    }
-  });
-
-  // Assessments routes
   app.get("/api/assessments", async (req, res) => {
     try {
       const assessments = await storage.getAssessments();
@@ -89,20 +69,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/assessments", async (req, res) => {
+  app.get("/api/assessments/:id", async (req, res) => {
     try {
-      const result = insertAssessmentSchema.safeParse(req.body);
-      if (!result.success) {
-        return res.status(400).json({ message: "Invalid assessment data", errors: result.error.issues });
+      const id = parseInt(req.params.id);
+      const assessment = await storage.getAssessment(id);
+      if (!assessment) {
+        return res.status(404).json({ message: "Assessment not found" });
       }
-      
-      const assessment = await storage.createAssessment(result.data);
-      res.status(201).json(assessment);
+      res.json(assessment);
     } catch (error) {
-      if (error instanceof Error && error.message === "Industry not found") {
-        return res.status(400).json({ message: "Invalid industry selected" });
-      }
-      res.status(500).json({ message: "Failed to create assessment" });
+      res.status(500).json({ message: "Failed to fetch assessment" });
     }
   });
 
@@ -120,7 +96,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const result = updateConfigSchema.safeParse(req.body);
       if (!result.success) {
-        return res.status(400).json({ message: "Invalid configuration data", errors: result.error.issues });
+        return res.status(400).json({ 
+          message: "Invalid configuration data", 
+          errors: result.error.issues 
+        });
       }
       
       const config = await storage.updateConfiguration(result.data.key, result.data.value);
@@ -133,20 +112,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Statistics endpoint
-  app.get("/api/statistics", async (req, res) => {
+  // Admin authentication
+  app.post("/api/admin/auth", async (req, res) => {
+    try {
+      const result = adminAuthSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: "Password required" });
+      }
+      
+      const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+      if (result.data.password === adminPassword) {
+        res.json({ success: true });
+      } else {
+        res.status(401).json({ message: "Invalid password" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Authentication failed" });
+    }
+  });
+
+  // Statistics endpoint for admin
+  app.get("/api/admin/statistics", async (req, res) => {
     try {
       const assessments = await storage.getAssessments();
-      const industries = await storage.getIndustries();
       
       const totalAssessments = assessments.length;
-      const highRiskCompanies = assessments.filter(a => a.riskLevel === 'high').length;
-      const configuredIndustries = industries.length;
+      const highRiskAssessments = assessments.filter(a => a.riskLevel === 'high').length;
+      const mediumRiskAssessments = assessments.filter(a => a.riskLevel === 'medium').length;
+      const lowRiskAssessments = assessments.filter(a => a.riskLevel === 'low').length;
+      
+      const totalFines = assessments.reduce((sum, a) => sum + a.fineEstimate, 0);
+      const averageRiskScore = assessments.length > 0 
+        ? assessments.reduce((sum, a) => sum + a.riskScore, 0) / assessments.length 
+        : 0;
+      
+      const sectorBreakdown = assessments.reduce((acc, a) => {
+        acc[a.industrySector] = (acc[a.industrySector] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
       
       res.json({
         totalAssessments,
-        highRiskCompanies,
-        configuredIndustries,
+        highRiskAssessments,
+        mediumRiskAssessments,
+        lowRiskAssessments,
+        totalFines,
+        averageRiskScore: Math.round(averageRiskScore),
+        sectorBreakdown,
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch statistics" });

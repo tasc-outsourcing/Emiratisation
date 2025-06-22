@@ -1,20 +1,13 @@
-import { industries, assessments, configuration, type Industry, type InsertIndustry, type Assessment, type InsertAssessment, type Configuration, type InsertConfiguration } from "@shared/schema";
+import { assessments, configuration, type Assessment, type InsertAssessment, type Configuration, type InsertConfiguration, type AssessmentInput, MOHRE_SECTORS } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 
 export interface IStorage {
-  // Industries
-  getIndustries(): Promise<Industry[]>;
-  getIndustry(id: number): Promise<Industry | undefined>;
-  createIndustry(industry: InsertIndustry): Promise<Industry>;
-  updateIndustry(id: number, industry: Partial<InsertIndustry>): Promise<Industry | undefined>;
-  deleteIndustry(id: number): Promise<boolean>;
-
   // Assessments
+  createAssessment(input: AssessmentInput): Promise<Assessment>;
   getAssessments(): Promise<Assessment[]>;
   getAssessment(id: number): Promise<Assessment | undefined>;
-  createAssessment(assessment: InsertAssessment): Promise<Assessment>;
-
+  
   // Configuration
   getConfiguration(): Promise<Configuration[]>;
   getConfigurationByKey(key: string): Promise<Configuration | undefined>;
@@ -23,39 +16,19 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  async getIndustries(): Promise<Industry[]> {
-    return await db.select().from(industries).where(eq(industries.isActive, true));
-  }
-
-  async getIndustry(id: number): Promise<Industry | undefined> {
-    const [industry] = await db.select().from(industries).where(eq(industries.id, id));
-    return industry || undefined;
-  }
-
-  async createIndustry(insertIndustry: InsertIndustry): Promise<Industry> {
-    const [industry] = await db
-      .insert(industries)
-      .values(insertIndustry)
+  async createAssessment(input: AssessmentInput): Promise<Assessment> {
+    // Calculate Emiratisation requirements and risk
+    const calculatedData = this.calculateEmiratsationRisk(input);
+    
+    const [assessment] = await db
+      .insert(assessments)
+      .values({
+        ...input,
+        ...calculatedData,
+      })
       .returning();
-    return industry;
-  }
 
-  async updateIndustry(id: number, updates: Partial<InsertIndustry>): Promise<Industry | undefined> {
-    const [industry] = await db
-      .update(industries)
-      .set(updates)
-      .where(eq(industries.id, id))
-      .returning();
-    return industry || undefined;
-  }
-
-  async deleteIndustry(id: number): Promise<boolean> {
-    const [industry] = await db
-      .update(industries)
-      .set({ isActive: false })
-      .where(eq(industries.id, id))
-      .returning();
-    return !!industry;
+    return assessment;
   }
 
   async getAssessments(): Promise<Assessment[]> {
@@ -65,52 +38,6 @@ export class DatabaseStorage implements IStorage {
   async getAssessment(id: number): Promise<Assessment | undefined> {
     const [assessment] = await db.select().from(assessments).where(eq(assessments.id, id));
     return assessment || undefined;
-  }
-
-  async createAssessment(insertAssessment: InsertAssessment): Promise<Assessment> {
-    const industry = await this.getIndustry(insertAssessment.industryId);
-    if (!industry) {
-      throw new Error("Industry not found");
-    }
-
-    // Calculate assessment values
-    const totalEmployees = insertAssessment.skilledEmployees + insertAssessment.unskilledEmployees;
-    const jurisdictionMultiplier = insertAssessment.jurisdiction === 'mainland' ? 1.0 : 0.75;
-    const adjustedRate = industry.emiratisationRate * jurisdictionMultiplier;
-    const requiredEmirates = Math.ceil(totalEmployees * adjustedRate);
-    const currentEmirates = insertAssessment.currentEmirates || 0;
-    
-    const gap = currentEmirates - requiredEmirates;
-    const riskPercentage = Math.min(100, Math.max(0, (-gap / requiredEmirates) * 100));
-    
-    let riskLevel: string;
-    if (riskPercentage <= 25) riskLevel = 'low';
-    else if (riskPercentage <= 50) riskLevel = 'medium';
-    else riskLevel = 'high';
-
-    const baseFine = await this.getConfigurationByKey('base_fine');
-    const baseFineAmount = baseFine ? parseFloat(baseFine.value) : 30000;
-    const freezonePenalty = await this.getConfigurationByKey('freezone_reduction');
-    const frezoneReduction = freezonePenalty ? parseFloat(freezonePenalty.value) : 0.25;
-    
-    const jurisdictionFineMultiplier = insertAssessment.jurisdiction === 'mainland' ? 1.0 : (1.0 - frezoneReduction);
-    const potentialFine = Math.abs(gap) * baseFineAmount * jurisdictionFineMultiplier * industry.riskMultiplier;
-
-    const [assessment] = await db
-      .insert(assessments)
-      .values({
-        ...insertAssessment,
-        currentEmirates,
-        totalEmployees,
-        requiredEmirates,
-        riskPercentage,
-        riskLevel,
-        potentialFine: Math.max(0, potentialFine),
-        createdAt: new Date().toISOString(),
-      })
-      .returning();
-
-    return assessment;
   }
 
   async getConfiguration(): Promise<Configuration[]> {
@@ -127,7 +54,7 @@ export class DatabaseStorage implements IStorage {
     if (existing) {
       const [updated] = await db
         .update(configuration)
-        .set(config)
+        .set({ ...config, updatedAt: new Date() })
         .where(eq(configuration.key, config.key))
         .returning();
       return updated;
@@ -143,10 +70,83 @@ export class DatabaseStorage implements IStorage {
   async updateConfiguration(key: string, value: string): Promise<Configuration | undefined> {
     const [updated] = await db
       .update(configuration)
-      .set({ value })
+      .set({ value, updatedAt: new Date() })
       .where(eq(configuration.key, key))
       .returning();
     return updated || undefined;
+  }
+
+  private calculateEmiratsationRisk(input: AssessmentInput) {
+    const {
+      companyLocation,
+      industrySector,
+      totalEmployees,
+      skilledEmployees,
+      partOfGroup,
+      groupOperatesMainland,
+      emiratiEmployees,
+      emiratisInSkilledRoles,
+      wpsGpssaCompliant,
+      emiratiLeftRecently,
+      departureDaysAgo,
+    } = input;
+
+    // Step 1: Calculate required Emiratis
+    let requiredEmirates = 0;
+
+    if (companyLocation === "freezone") {
+      requiredEmirates = 0;
+    } else if (totalEmployees >= 20 && totalEmployees <= 49 && this.isMoHREDesignatedSector(industrySector)) {
+      requiredEmirates = 2;
+    } else if (skilledEmployees >= 50) {
+      const targetPercent = 8; // Default 8%, could be configurable
+      requiredEmirates = Math.ceil((skilledEmployees * targetPercent) / 100);
+    }
+
+    // Step 2: Calculate valid Emiratis
+    let validEmirates = 0;
+    if (wpsGpssaCompliant && emiratisInSkilledRoles) {
+      validEmirates = emiratiEmployees;
+    }
+
+    // Grace period for recent departures
+    if (emiratiLeftRecently && departureDaysAgo !== undefined && departureDaysAgo <= 90) {
+      validEmirates += 1;
+    }
+
+    // Step 3: Calculate gap and fine
+    const gap = Math.max(0, requiredEmirates - validEmirates);
+    const finePerEmirati = 96000; // Default, could be configurable
+    const fineEstimate = gap * finePerEmirati;
+
+    // Step 4: Calculate risk score
+    let riskScore = 100 - (gap * 20);
+    if (gap >= 2) riskScore -= 10;
+    if (wpsGpssaCompliant) riskScore += 5;
+    
+    // Ensure score is within bounds
+    riskScore = Math.max(0, Math.min(100, riskScore));
+
+    // Step 5: Determine risk level
+    let riskLevel: string;
+    if (riskScore >= 71) riskLevel = "low";
+    else if (riskScore >= 41) riskLevel = "medium";
+    else riskLevel = "high";
+
+    return {
+      requiredEmirates,
+      validEmirates,
+      gap,
+      fineEstimate,
+      riskScore,
+      riskLevel,
+    };
+  }
+
+  private isMoHREDesignatedSector(sector: string): boolean {
+    // All 14 MoHRE sectors are designated (excluding Banking, Insurance, Government, Other)
+    const designated = MOHRE_SECTORS.slice(0, 14); // First 14 sectors
+    return designated.includes(sector as any);
   }
 }
 

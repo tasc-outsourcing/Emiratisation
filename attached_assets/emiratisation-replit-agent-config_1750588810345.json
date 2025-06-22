@@ -1,0 +1,44 @@
+{
+  "mohre_designated_sectors": [
+    "1. Information and Communications",
+    "2. Financial and Insurance Activities",
+    "3. Real Estate Activities",
+    "4. Professional, Scientific and Technical Activities",
+    "5. Administrative and Support Services",
+    "6. Education",
+    "7. Healthcare and Social Work Activities",
+    "8. Arts and Entertainment",
+    "9. Mining and Quarrying",
+    "10. Manufacturing",
+    "11. Construction",
+    "12. Wholesale and Retail Trade",
+    "13. Transportation and Warehousing",
+    "14. Hospitality (Accommodation and Food Services)"
+  ],
+  "is_mohre_designated_sector_logic": "Check if selected sector is in list",
+  "hubspot": {
+    "method": "Zapier Webhook (initially)",
+    "fields": [
+      "first_name",
+      "last_name",
+      "email",
+      "phone",
+      "company",
+      "emiratisation_gap",
+      "risk_score",
+      "risk_level",
+      "fine_estimate"
+    ],
+    "auth": "None required (unless switching to HubSpot API)"
+  },
+  "logo_path": "/images/tasc-logo.png",
+  "skilled_vs_total_validation": "Skilled must be <= total",
+  "departure_date_logic": "If departure within 90 days, apply grace",
+  "admin_panel": {
+    "route": "/admin",
+    "auth_method": "password",
+    "env_var": "ADMIN_PASSWORD"
+  },
+  "default_target_percent": 8,
+  "regulated_sector_redirect": true
+}

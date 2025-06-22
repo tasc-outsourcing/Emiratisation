@@ -13,8 +13,8 @@
   --card-foreground: hsl(20, 14.3%, 4.1%);
   --border: hsl(20, 5.9%, 90%);
   --input: hsl(20, 5.9%, 90%);
-  --primary: hsl(207, 90%, 54%);
-  --primary-foreground: hsl(211, 100%, 99%);
+  --primary: hsl(207, 100%, 13%);
+  --primary-foreground: hsl(0, 0%, 98%);
   --secondary: hsl(60, 4.8%, 95.9%);
   --secondary-foreground: hsl(24, 9.8%, 10%);
   --accent: hsl(60, 4.8%, 95.9%);
@@ -22,27 +22,19 @@
   --destructive: hsl(0, 84.2%, 60.2%);
   --destructive-foreground: hsl(60, 9.1%, 97.8%);
   --ring: hsl(20, 14.3%, 4.1%);
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 
-  /* Custom colors for UAE theme */
-  --primary-50: hsl(202, 100%, 95%);
-  --primary-100: hsl(204, 100%, 86%);
-  --primary-500: hsl(207, 90%, 54%);
-  --primary-600: hsl(208, 88%, 50%);
-  --primary-700: hsl(211, 100%, 43%);
+  /* TASC Branding Colors */
+  --tasc-primary: hsl(207, 100%, 13%); /* #004267 */
+  --tasc-teal: hsl(178, 100%, 31%); /* #00A49E */
+  --tasc-green: hsl(133, 41%, 56%); /* #3EB54A */
+  --tasc-lightblue: hsl(197, 100%, 34%); /* #007FAD */
+  --tasc-yellow: hsl(45, 100%, 50%); /* #FFC500 */
 
-  --warning-50: hsl(45, 100%, 94%);
-  --warning-100: hsl(48, 100%, 78%);
-  --warning-500: hsl(32, 100%, 50%);
-  --warning-600: hsl(31, 100%, 47%);
-
-  --success-50: hsl(120, 39%, 91%);
-  --success-500: hsl(122, 39%, 49%);
-  --success-600: hsl(125, 66%, 32%);
-
-  --error-50: hsl(0, 100%, 97%);
-  --error-500: hsl(0, 65%, 51%);
-  --error-600: hsl(0, 70%, 35%);
+  /* Risk level colors */
+  --risk-low: hsl(133, 41%, 56%); /* Green */
+  --risk-medium: hsl(45, 100%, 50%); /* Yellow */
+  --risk-high: hsl(0, 84%, 60%); /* Red */
 }
 
 .dark {
@@ -56,8 +48,8 @@
   --card-foreground: hsl(0, 0%, 98%);
   --border: hsl(240, 3.7%, 15.9%);
   --input: hsl(240, 3.7%, 15.9%);
-  --primary: hsl(207, 90%, 54%);
-  --primary-foreground: hsl(211, 100%, 99%);
+  --primary: hsl(207, 100%, 13%);
+  --primary-foreground: hsl(0, 0%, 98%);
   --secondary: hsl(240, 3.7%, 15.9%);
   --secondary-foreground: hsl(0, 0%, 98%);
   --accent: hsl(240, 3.7%, 15.9%);
@@ -65,7 +57,6 @@
   --destructive: hsl(0, 62.8%, 30.6%);
   --destructive-foreground: hsl(0, 0%, 98%);
   --ring: hsl(240, 4.9%, 83.9%);
-  --radius: 0.5rem;
 }
 
 @layer base {
@@ -80,115 +71,99 @@
 }
 
 @layer components {
-  .nav-tab {
-    @apply bg-gray-100 text-gray-600 transition-colors duration-200;
-  }
-  
-  .nav-tab.active {
-    @apply bg-primary-500 text-white;
-  }
-  
-  .nav-tab:hover:not(.active) {
-    @apply bg-gray-200;
+  .tasc-header {
+    height: 300px;
+    background: var(--tasc-primary);
+    background: linear-gradient(135deg, var(--tasc-primary) 0%, var(--tasc-lightblue) 100%);
   }
 
-  .bg-primary-50 {
-    background-color: var(--primary-50);
+  .btn-primary {
+    background-color: var(--tasc-primary);
+    border-color: var(--tasc-primary);
   }
 
-  .bg-primary-100 {
-    background-color: var(--primary-100);
+  .btn-primary:hover {
+    background-color: var(--tasc-lightblue);
+    border-color: var(--tasc-lightblue);
   }
 
-  .bg-primary-500 {
-    background-color: var(--primary-500);
+  .btn-cta {
+    background-color: var(--tasc-yellow);
+    color: var(--tasc-primary);
+    border-color: var(--tasc-yellow);
   }
 
-  .bg-primary-600 {
-    background-color: var(--primary-600);
+  .btn-cta:hover {
+    background-color: hsl(45, 100%, 45%);
+    border-color: hsl(45, 100%, 45%);
   }
 
-  .bg-primary-700 {
-    background-color: var(--primary-700);
+  .card-tasc {
+    border-radius: 12px;
+    border: 1px solid hsl(20, 5.9%, 90%);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   }
 
-  .text-primary-500 {
-    color: var(--primary-500);
+  .risk-indicator-low {
+    background-color: var(--risk-low);
+    color: white;
   }
 
-  .text-primary-600 {
-    color: var(--primary-600);
+  .risk-indicator-medium {
+    background-color: var(--risk-medium);
+    color: var(--tasc-primary);
   }
 
-  .text-primary-700 {
-    color: var(--primary-700);
+  .risk-indicator-high {
+    background-color: var(--risk-high);
+    color: white;
   }
 
-  .hover\:bg-primary-600:hover {
-    background-color: var(--primary-600);
+  .text-tasc-primary {
+    color: var(--tasc-primary);
   }
 
-  .bg-warning-50 {
-    background-color: var(--warning-50);
+  .text-tasc-teal {
+    color: var(--tasc-teal);
   }
 
-  .bg-warning-100 {
-    background-color: var(--warning-100);
+  .text-tasc-green {
+    color: var(--tasc-green);
   }
 
-  .bg-warning-500 {
-    background-color: var(--warning-500);
+  .text-tasc-lightblue {
+    color: var(--tasc-lightblue);
   }
 
-  .bg-warning-600 {
-    background-color: var(--warning-600);
+  .text-tasc-yellow {
+    color: var(--tasc-yellow);
   }
 
-  .text-warning-500 {
-    color: var(--warning-500);
+  .bg-tasc-primary {
+    background-color: var(--tasc-primary);
   }
 
-  .text-warning-600 {
-    color: var(--warning-600);
+  .bg-tasc-teal {
+    background-color: var(--tasc-teal);
   }
 
-  .bg-success-50 {
-    background-color: var(--success-50);
+  .bg-tasc-green {
+    background-color: var(--tasc-green);
   }
 
-  .bg-success-500 {
-    background-color: var(--success-500);
+  .bg-tasc-lightblue {
+    background-color: var(--tasc-lightblue);
   }
 
-  .bg-success-600 {
-    background-color: var(--success-600);
+  .bg-tasc-yellow {
+    background-color: var(--tasc-yellow);
   }
 
-  .text-success-500 {
-    color: var(--success-500);
+  .border-tasc-primary {
+    border-color: var(--tasc-primary);
   }
 
-  .text-success-600 {
-    color: var(--success-600);
-  }
-
-  .bg-error-50 {
-    background-color: var(--error-50);
-  }
-
-  .bg-error-500 {
-    background-color: var(--error-500);
-  }
-
-  .bg-error-600 {
-    background-color: var(--error-600);
-  }
-
-  .text-error-500 {
-    color: var(--error-500);
-  }
-
-  .text-error-600 {
-    color: var(--error-600);
+  .border-tasc-yellow {
+    border-color: var(--tasc-yellow);
   }
 }
