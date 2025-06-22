@@ -91,11 +91,13 @@
     background-color: var(--tasc-yellow);
     color: var(--tasc-primary);
     border-color: var(--tasc-yellow);
+    font-weight: 600;
   }
 
   .btn-cta:hover {
     background-color: hsl(45, 100%, 45%);
     border-color: hsl(45, 100%, 45%);
+    color: var(--tasc-primary);
   }
 
   .card-tasc {
