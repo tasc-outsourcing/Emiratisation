@@ -1,8 +1,9 @@
 import { useState } from "react";
 import Header from "@/components/header";
-import AssessmentForm from "@/components/assessment-form";
+import TwoStepForm from "@/components/two-step-form";
 import ResultsDisplay from "@/components/results-display";
 import LeadCaptureModal from "@/components/lead-capture-modal";
+import Footer from "@/components/footer";
 import type { AssessmentInput, Assessment } from "@shared/schema";
 
 export default function AssessmentPage() {
@@ -10,20 +11,31 @@ export default function AssessmentPage() {
   const [showLeadCapture, setShowLeadCapture] = useState(false);
   const [completedAssessment, setCompletedAssessment] = useState<Assessment | null>(null);
 
-  const handleFormComplete = (data: Omit<AssessmentInput, 'firstName' | 'lastName' | 'email' | 'phone' | 'companyName'>) => {
+  const handleFormComplete = (data: any) => {
     setFormData(data);
     setShowLeadCapture(true);
   };
 
-  const handleLeadCapture = (leadData: { firstName: string; lastName: string; email: string; phone: string; companyName: string }) => {
+  const handleLeadCapture = (leadData: { name: string; email: string; phone: string; company: string }) => {
     if (!formData) return;
     
     const completeData: AssessmentInput = {
-      ...formData as Omit<AssessmentInput, 'firstName' | 'lastName' | 'email' | 'phone' | 'companyName'>,
-      ...leadData,
+      companyName: formData.companyName || leadData.company,
+      location: formData.location,
+      industrySector: formData.industrySector,
+      totalEmployees: formData.totalEmployees,
+      emiratiEmployees: formData.emiratiEmployees,
+      recentDepartures: formData.recentDepartures,
+      departuresCount: formData.departuresCount || 0,
+      monthsSinceDeparture: formData.monthsSinceDeparture || 0,
+      hasRecruitmentPlan: formData.hasRecruitmentPlan,
+      isRegulatedSector: formData.isRegulatedSector,
+      contactName: leadData.name,
+      contactEmail: leadData.email,
+      contactPhone: leadData.phone,
+      contactCompany: leadData.company,
     };
 
-    // Submit to API
     submitAssessment(completeData);
   };
 
@@ -62,7 +74,7 @@ export default function AssessmentPage() {
               </p>
             </div>
             
-            <AssessmentForm onComplete={handleFormComplete} />
+            <TwoStepForm onComplete={handleFormComplete} />
           </div>
         ) : (
           <ResultsDisplay assessment={completedAssessment} />

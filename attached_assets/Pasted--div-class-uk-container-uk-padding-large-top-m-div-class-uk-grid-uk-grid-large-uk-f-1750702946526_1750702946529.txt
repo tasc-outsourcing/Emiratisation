@@ -1,0 +1,29 @@
+<div class="uk-container uk-padding-large-top@m">
+            <div class="uk-grid uk-grid-large uk-flex-middle uk-flex-between@m uk-flex-center uk-flex-wrap-reverse uk-grid-match" uk-grid="">
+                <div class="uk-margin-remove uk-first-column">
+                    <div class="footer__copyright__text text-white">
+                        <p class="uk-margin-remove uk-text-center">
+                            © Copyright 2025 TASC Outsourcing. All rights reserved                        </p>
+                    </div>
+                </div>
+                <div>
+                    <div class="uk-grid uk-grid-medium uk-grid-match uk-flex-center" uk-grid="">
+                                                <div class="uk-first-column">
+                            <a class="footer__copyright__link text-white" target="_self" href="https://tascoutsourcing.sa/en/terms-of-use">Terms of use</a>
+                        </div>
+                                                <div>
+                            <a class="footer__copyright__link text-white" target="_self" href="https://tascoutsourcing.sa/en/disclaimer">Disclaimer</a>
+                        </div>
+                                                <div>
+                            <a class="footer__copyright__link text-white" target="_self" href="https://tascoutsourcing.sa/en/privacy-policy">Privacy Policy</a>
+                        </div>
+                                                <div>
+                            <a class="footer__copyright__link text-white" target="_self" href="https://tascoutsourcing.sa/en/fraud-scam-alert">Fraud &amp; Scam Alert</a>
+                        </div>
+                                                <div>
+                            <a class="footer__copyright__link text-white" target="_blank" href="https://tasclive.ramcoes.com/RVW">Employee Login</a>
+                        </div>
+                                            </div>
+                </div>
+            </div>
+        </div>
