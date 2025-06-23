@@ -13,8 +13,8 @@
   --card-foreground: hsl(20, 14.3%, 4.1%);
   --border: hsl(20, 5.9%, 90%);
   --input: hsl(20, 5.9%, 90%);
-  --primary: hsl(207, 100%, 13%);
-  --primary-foreground: hsl(0, 0%, 98%);
+  --primary: hsl(45, 100%, 50%);
+  --primary-foreground: hsl(220, 9%, 7%);
   --secondary: hsl(60, 4.8%, 95.9%);
   --secondary-foreground: hsl(24, 9.8%, 10%);
   --accent: hsl(60, 4.8%, 95.9%);
@@ -96,9 +96,26 @@
   }
 
   .btn-cta:hover {
-    background-color: hsl(45, 100%, 45%) !important;
-    border-color: hsl(45, 100%, 45%) !important;
+    background-color: hsl(45, 100%, 60%) !important;
+    border-color: hsl(45, 100%, 60%) !important;
     color: black !important;
+  }
+
+  /* Force yellow buttons */
+  .bg-\[\#FFC500\] {
+    background-color: #FFC500 !important;
+    color: black !important;
+  }
+
+  .hover\:bg-\[\#FFD700\]:hover {
+    background-color: #FFD700 !important;
+    color: black !important;
+  }
+
+  /* Company blue headers */
+  .header-company-blue {
+    background-color: var(--tasc-primary) !important;
+    color: white !important;
   }
 
   .btn-yellow {
