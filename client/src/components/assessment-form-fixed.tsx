@@ -143,7 +143,17 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                   name="industrySector"
                   render={({ field }) => (
                     <FormItem className="space-y-3">
-                      <FormLabel className="text-sm font-medium">Industry Sector</FormLabel>
+                      <FormLabel className="flex items-center text-sm font-medium">
+                        Industry Sector
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent className="max-w-xs">
+                            <p>Select the main industry your company operates in. Certain sectors have specific Emiratisation requirements if you have fewer than 50 employees.</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -173,6 +183,14 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                       <FormLabel className="flex items-center text-sm font-medium">
                         <Users className="h-4 w-4 mr-2" />
                         Total Employees
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent className="max-w-xs">
+                            <p>Enter your company's total headcount across all roles and departments, including both skilled and unskilled workers.</p>
+                          </TooltipContent>
+                        </Tooltip>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -193,7 +211,17 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                   name="skilledEmployees"
                   render={({ field }) => (
                     <FormItem className="space-y-3">
-                      <FormLabel className="text-sm font-medium">Skilled Employees</FormLabel>
+                      <FormLabel className="flex items-center text-sm font-medium">
+                        Skilled Employees
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent className="max-w-xs">
+                            <p>Only skilled roles are counted when calculating Emiratisation targets. Skilled jobs include managers, professionals, sales, clerical, and technical roles.</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -217,7 +245,17 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 name="partOfGroup"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel className="text-sm font-medium">Part of a Group?</FormLabel>
+                    <FormLabel className="flex items-center text-sm font-medium">
+                      Part of a Group?
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <p>If your company is owned by or affiliated with a larger group of companies, select 'Yes.'</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
@@ -245,7 +283,17 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                   name="groupOperatesMainland"
                   render={({ field }) => (
                     <FormItem className="space-y-3">
-                      <FormLabel className="text-sm font-medium">Do any group companies operate in Mainland?</FormLabel>
+                      <FormLabel className="flex items-center text-sm font-medium">
+                        Do any group companies operate in Mainland?
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent className="max-w-xs">
+                            <p>If any entities in your group are mainland-licensed, they may be subject to Emiratisation laws—even if your company is exempt.</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </FormLabel>
                       <FormControl>
                         <RadioGroup
                           onValueChange={(value) => field.onChange(value === "true")}
@@ -284,7 +332,17 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 name="emiratiEmployees"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel className="text-sm font-medium">Number of Emiratis</FormLabel>
+                    <FormLabel className="flex items-center text-sm font-medium">
+                      Number of Emiratis
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <p>How many UAE Nationals are currently employed in your company?</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -304,7 +362,17 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 name="emiratisInSkilledRoles"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel className="text-sm font-medium">Are Emiratis in skilled roles?</FormLabel>
+                    <FormLabel className="flex items-center text-sm font-medium">
+                      Are Emiratis in skilled roles?
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <p>Emiratisation quotas only count Emiratis working in skilled positions like managers, sales, tech, or admin.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
@@ -331,7 +399,17 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 name="wpsGpssaCompliant"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel className="text-sm font-medium">WPS & GPSSA Compliant?</FormLabel>
+                    <FormLabel className="flex items-center text-sm font-medium">
+                      WPS & GPSSA Compliant?
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <p>This means the Emiratis are paid via the official Wages Protection System and registered for pension under GPSSA. Both are required for compliance.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
