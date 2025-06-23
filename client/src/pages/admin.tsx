@@ -182,8 +182,8 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Card className="w-full max-w-md card-tasc">
-          <CardHeader className="text-center">
-            <CardTitle className="flex items-center justify-center text-2xl font-bold text-tasc-primary">
+          <CardHeader className="text-center header-company-blue">
+            <CardTitle className="flex items-center justify-center text-2xl font-bold text-white">
               <Lock className="h-6 w-6 mr-2" />
               Admin Access
             </CardTitle>

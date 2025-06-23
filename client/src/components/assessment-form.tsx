@@ -94,8 +94,8 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           {/* Company Profile Section */}
           <Card className="card-tasc">
-            <CardHeader>
-              <CardTitle className="flex items-center text-tasc-primary">
+            <CardHeader className="header-company-blue">
+              <CardTitle className="flex items-center text-white">
                 <Building className="h-5 w-5 mr-2" />
                 Company Profile
               </CardTitle>
@@ -266,8 +266,8 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
 
           {/* Emirati Workforce Section */}
           <Card className="card-tasc">
-            <CardHeader>
-              <CardTitle className="flex items-center text-tasc-primary">
+            <CardHeader className="header-company-blue">
+              <CardTitle className="flex items-center text-white">
                 <Users className="h-5 w-5 mr-2" />
                 Emirati Workforce
               </CardTitle>
@@ -409,7 +409,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
           </Card>
 
           <div className="text-center">
-            <Button type="submit" className="btn-primary px-8 py-3 text-lg">
+            <Button type="submit" className="bg-[#FFC500] hover:bg-[#FFD700] text-black font-semibold px-8 py-3 text-lg">
               Calculate Risk Assessment
             </Button>
           </div>
