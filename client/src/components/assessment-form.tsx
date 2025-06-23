@@ -52,9 +52,9 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
     defaultValues: {
       companyLocation: undefined,
       industrySector: "",
-      totalEmployees: 1,
-      skilledEmployees: 1,
-      emiratiEmployees: 0,
+      totalEmployees: undefined,
+      skilledEmployees: undefined,
+      emiratiEmployees: undefined,
       partOfGroup: false,
       emiratisInSkilledRoles: false,
       wpsGpssaCompliant: false,
@@ -100,7 +100,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 Company Profile
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
@@ -172,9 +172,9 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                         <Input
                           type="number"
                           min="1"
-                          placeholder="Total number of employees"
                           {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                          value={field.value || ""}
+                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
                         />
                       </FormControl>
                       <FormMessage />
@@ -192,9 +192,9 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                         <Input
                           type="number"
                           min="1"
-                          placeholder="Number of skilled employees"
                           {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                          value={field.value || ""}
+                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
                         />
                       </FormControl>
                       <FormDescription>
@@ -272,7 +272,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 Emirati Workforce
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="p-6 space-y-6">
               <FormField
                 control={form.control}
                 name="emiratiEmployees"

@@ -16,9 +16,9 @@ export default function Header() {
       <div className="absolute inset-0 bg-[#004267] bg-opacity-70"></div>
       <div className="container mx-auto px-4 relative z-10 h-full flex flex-col justify-center py-8">
         {/* Desktop: Button in top right, Mobile: Button below content */}
-        <div className="hidden md:block absolute top-6 right-6">
+        <div className="hidden md:block absolute top-4 right-4">
           <Button 
-            className="bg-[#FFC500] hover:bg-[#FFD700] text-black font-semibold px-6 py-3"
+            className="bg-[#FFC500] hover:bg-[#FFD700] text-black font-semibold px-4 py-2"
             onClick={() => window.open('https://calendly.com/nirbhay-tascoutsourcing/30-mins-emiratisation-strategy-session-clone', '_blank')}
           >
             Book Emiratisation Call

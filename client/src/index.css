@@ -116,6 +116,17 @@
   .header-company-blue {
     background-color: var(--tasc-primary) !important;
     color: white !important;
+    padding: 1rem 1.5rem !important;
+  }
+
+  /* Form field spacing fixes */
+  .form-field-spacing {
+    margin-bottom: 1.5rem;
+  }
+
+  /* Card content padding fix */
+  .card-content-padding {
+    padding: 1.5rem !important;
   }
 
   .btn-yellow {
