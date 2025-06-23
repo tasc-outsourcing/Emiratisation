@@ -436,7 +436,17 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 name="emiratiLeftRecently"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel className="text-sm font-medium">Has any Emirati left recently?</FormLabel>
+                    <FormLabel className="flex items-center text-sm font-medium">
+                      Has any Emirati left recently?
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <p>If an Emirati employee left recently, you may still be within MoHRE's grace period to replace them without penalty. Enter the most recent date of departure.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
