@@ -397,8 +397,13 @@ export default function AdminPage() {
                     <TableRow>
                       <TableHead>Company</TableHead>
                       <TableHead>Contact</TableHead>
+                      <TableHead>Location</TableHead>
                       <TableHead>Sector</TableHead>
+                      <TableHead>Total Employees</TableHead>
+                      <TableHead>Skilled Employees</TableHead>
+                      <TableHead>Emirati Employees</TableHead>
                       <TableHead>Risk Level</TableHead>
+                      <TableHead>Risk Score</TableHead>
                       <TableHead>Fine Estimate</TableHead>
                       <TableHead>Date</TableHead>
                     </TableRow>
@@ -413,12 +418,19 @@ export default function AdminPage() {
                             <div className="text-sm text-gray-500">{assessment.email}</div>
                           </div>
                         </TableCell>
+                        <TableCell>
+                          <span className="capitalize">{assessment.companyLocation}</span>
+                        </TableCell>
                         <TableCell>{assessment.industrySector}</TableCell>
+                        <TableCell>{assessment.totalEmployees}</TableCell>
+                        <TableCell>{assessment.skilledEmployees}</TableCell>
+                        <TableCell>{assessment.emiratiEmployees}</TableCell>
                         <TableCell>
                           <span className={`px-2 py-1 rounded text-xs font-medium risk-indicator-${assessment.riskLevel}`}>
                             {assessment.riskLevel.toUpperCase()}
                           </span>
                         </TableCell>
+                        <TableCell>{assessment.riskScore}/100</TableCell>
                         <TableCell>AED {assessment.fineEstimate.toLocaleString()}</TableCell>
                         <TableCell>
                           {new Date(assessment.createdAt).toLocaleDateString()}
@@ -432,6 +444,7 @@ export default function AdminPage() {
           </Card>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
