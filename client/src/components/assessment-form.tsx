@@ -52,13 +52,14 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
     defaultValues: {
       companyLocation: undefined,
       industrySector: "",
-      totalEmployees: undefined,
-      skilledEmployees: undefined,
-      emiratiEmployees: undefined,
+      totalEmployees: "",
+      skilledEmployees: "",
+      emiratiEmployees: "",
       partOfGroup: false,
       emiratisInSkilledRoles: false,
       wpsGpssaCompliant: false,
       emiratiLeftRecently: false,
+      departureDaysAgo: "",
     },
   });
 
@@ -283,9 +284,9 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                       <Input
                         type="number"
                         min="0"
-                        placeholder="Current number of Emirati employees"
                         {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                        value={field.value || ""}
+                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -392,9 +393,9 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                           type="number"
                           min="0"
                           max="365"
-                          placeholder="Number of days"
                           {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                          value={field.value || ""}
+                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
                         />
                       </FormControl>
                       <FormDescription>
