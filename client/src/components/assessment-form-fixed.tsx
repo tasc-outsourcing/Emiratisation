@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Building, Users, MapPin, Calendar } from "lucide-react";
+import { Building, Users, MapPin, Calendar, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { MOHRE_SECTORS, REGULATED_SECTORS, type AssessmentInput } from "@shared/schema";
 
 const formSchema = z.object({
@@ -67,8 +68,9 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-8">
-      {isRegulatedSector && (
+    <TooltipProvider>
+      <div className="max-w-4xl mx-auto p-6 space-y-8">
+        {isRegulatedSector && (
         <Card className="border-orange-200 bg-orange-50">
           <CardContent className="p-6">
             <div className="text-center">
@@ -106,6 +108,14 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                       <FormLabel className="flex items-center text-sm font-medium">
                         <MapPin className="h-4 w-4 mr-2" />
                         Company Location
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent className="max-w-xs">
+                            <p>Is your company registered on the UAE mainland or in a Free Zone (like DMCC, DIFC, JAFZA, etc.)? Only mainland companies are subject to mandatory Emiratisation quotas.</p>
+                          </TooltipContent>
+                        </Tooltip>
                       </FormLabel>
                       <FormControl>
                         <RadioGroup
@@ -408,6 +418,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
           </div>
         </form>
       </Form>
-    </div>
+      </div>
+    </TooltipProvider>
   );
 }
