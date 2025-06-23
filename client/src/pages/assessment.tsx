@@ -1,13 +1,13 @@
 import { useState } from "react";
 import Header from "@/components/header";
-import TwoStepForm from "@/components/two-step-form";
+import AssessmentForm from "@/components/assessment-form";
 import ResultsDisplay from "@/components/results-display";
 import LeadCaptureModal from "@/components/lead-capture-modal";
 import Footer from "@/components/footer";
 import type { AssessmentInput, Assessment } from "@shared/schema";
 
 export default function AssessmentPage() {
-  const [formData, setFormData] = useState<Partial<AssessmentInput> | null>(null);
+  const [formData, setFormData] = useState<any>(null);
   const [showLeadCapture, setShowLeadCapture] = useState(false);
   const [completedAssessment, setCompletedAssessment] = useState<Assessment | null>(null);
 
@@ -21,15 +21,15 @@ export default function AssessmentPage() {
     
     const completeData: AssessmentInput = {
       companyName: formData.companyName || leadData.company,
-      location: formData.location,
-      industrySector: formData.industrySector,
-      totalEmployees: formData.totalEmployees,
-      emiratiEmployees: formData.emiratiEmployees,
-      recentDepartures: formData.recentDepartures,
+      location: formData.location || "mainland",
+      industrySector: formData.industrySector || "Other",
+      totalEmployees: formData.totalEmployees || 0,
+      emiratiEmployees: formData.emiratiEmployees || 0,
+      recentDepartures: formData.recentDepartures || "no",
       departuresCount: formData.departuresCount || 0,
       monthsSinceDeparture: formData.monthsSinceDeparture || 0,
-      hasRecruitmentPlan: formData.hasRecruitmentPlan,
-      isRegulatedSector: formData.isRegulatedSector,
+      hasRecruitmentPlan: formData.hasRecruitmentPlan || "no",
+      isRegulatedSector: formData.isRegulatedSector || "no",
       contactName: leadData.name,
       contactEmail: leadData.email,
       contactPhone: leadData.phone,
@@ -62,7 +62,7 @@ export default function AssessmentPage() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 flex-1">
         {!completedAssessment ? (
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
@@ -74,7 +74,7 @@ export default function AssessmentPage() {
               </p>
             </div>
             
-            <TwoStepForm onComplete={handleFormComplete} />
+            <AssessmentForm onComplete={handleFormComplete} />
           </div>
         ) : (
           <ResultsDisplay assessment={completedAssessment} />

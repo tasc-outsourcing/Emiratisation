@@ -14,27 +14,23 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 // Step 1 Schema - Company Profile
 const step1Schema = z.object({
   companyName: z.string().min(1, "Company name is required"),
-  location: z.enum(["mainland", "freezone"], {
+  companyLocation: z.enum(["mainland", "freezone"], {
     required_error: "Please select a location",
   }),
   industrySector: z.string().min(1, "Please select an industry sector"),
   totalEmployees: z.number().min(1, "Total employees must be at least 1"),
-  emiratiEmployees: z.number().min(0, "Emirati employees cannot be negative"),
+  skilledEmployees: z.number().min(1, "Skilled employees must be at least 1"),
+  partOfGroup: z.boolean(),
+  groupOperatesMainland: z.boolean().optional(),
 });
 
 // Step 2 Schema - Emirati Workforce Details
 const step2Schema = z.object({
-  recentDepartures: z.enum(["yes", "no"], {
-    required_error: "Please select yes or no",
-  }),
-  departuresCount: z.number().min(0).optional(),
-  monthsSinceDeparture: z.number().min(0).optional(),
-  hasRecruitmentPlan: z.enum(["yes", "no"], {
-    required_error: "Please select yes or no",
-  }),
-  isRegulatedSector: z.enum(["yes", "no"], {
-    required_error: "Please select yes or no",
-  }),
+  emiratiEmployees: z.number().min(0, "Emirati employees cannot be negative"),
+  emiratisInSkilledRoles: z.boolean(),
+  wpsGpssaCompliant: z.boolean(),
+  emiratiLeftRecently: z.boolean(),
+  departureDaysAgo: z.number().min(0).max(365).optional(),
 });
 
 type Step1Data = z.infer<typeof step1Schema>;
@@ -54,21 +50,23 @@ export default function TwoStepForm({ onComplete }: TwoStepFormProps) {
     resolver: zodResolver(step1Schema),
     defaultValues: {
       companyName: "",
-      location: undefined,
+      companyLocation: undefined,
       industrySector: "",
       totalEmployees: 0,
-      emiratiEmployees: 0,
+      skilledEmployees: 0,
+      partOfGroup: false,
+      groupOperatesMainland: undefined,
     },
   });
 
   const step2Form = useForm<Step2Data>({
     resolver: zodResolver(step2Schema),
     defaultValues: {
-      recentDepartures: undefined,
-      departuresCount: 0,
-      monthsSinceDeparture: 0,
-      hasRecruitmentPlan: undefined,
-      isRegulatedSector: undefined,
+      emiratiEmployees: 0,
+      emiratisInSkilledRoles: false,
+      wpsGpssaCompliant: false,
+      emiratiLeftRecently: false,
+      departureDaysAgo: undefined,
     },
   });
 
@@ -115,7 +113,7 @@ export default function TwoStepForm({ onComplete }: TwoStepFormProps) {
 
               <FormField
                 control={step1Form.control}
-                name="location"
+                name="companyLocation"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Company Location</FormLabel>
