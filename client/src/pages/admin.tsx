@@ -225,7 +225,7 @@ export default function AdminPage() {
                 />
                 <Button
                   type="submit"
-                  className="w-full btn-primary"
+                  className="w-full bg-[#FFC500] hover:bg-[#FFD700] text-black font-semibold"
                   disabled={authMutation.isPending}
                 >
                   {authMutation.isPending ? "Authenticating..." : "Login"}
@@ -292,8 +292,8 @@ export default function AdminPage() {
 
           {/* Configuration */}
           <Card className="lg:col-span-2 card-tasc">
-            <CardHeader>
-              <CardTitle className="flex items-center text-tasc-primary">
+            <CardHeader className="header-company-blue">
+              <CardTitle className="flex items-center text-white">
                 <Settings className="h-5 w-5 mr-2" />
                 System Configuration
               </CardTitle>
@@ -342,7 +342,7 @@ export default function AdminPage() {
                   
                   <Button
                     type="submit"
-                    className="w-full btn-primary"
+                    className="w-full bg-[#FFC500] hover:bg-[#FFD700] text-black font-semibold"
                     disabled={updateConfigMutation.isPending}
                   >
                     {updateConfigMutation.isPending ? "Updating..." : "Update Configuration"}
@@ -354,8 +354,8 @@ export default function AdminPage() {
 
           {/* Quick Actions */}
           <Card className="card-tasc">
-            <CardHeader>
-              <CardTitle className="flex items-center text-tasc-primary">
+            <CardHeader className="header-company-blue">
+              <CardTitle className="flex items-center text-white">
                 <BarChart3 className="h-5 w-5 mr-2" />
                 Quick Actions
               </CardTitle>
@@ -363,7 +363,7 @@ export default function AdminPage() {
             <CardContent className="space-y-4">
               <Button
                 onClick={exportData}
-                className="w-full btn-primary"
+                className="w-full bg-[#FFC500] hover:bg-[#FFD700] text-black font-semibold"
                 disabled={!assessments || assessments.length === 0}
               >
                 <Download className="h-4 w-4 mr-2" />
@@ -387,8 +387,8 @@ export default function AdminPage() {
 
           {/* Recent Assessments */}
           <Card className="lg:col-span-3 card-tasc">
-            <CardHeader>
-              <CardTitle className="text-tasc-primary">Recent Assessments</CardTitle>
+            <CardHeader className="header-company-blue">
+              <CardTitle className="text-white">Recent Assessments</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
