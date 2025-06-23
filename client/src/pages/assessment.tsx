@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Header from "@/components/header";
-import AssessmentForm from "@/components/assessment-form";
+import AssessmentForm from "@/components/assessment-form-fixed";
 import ResultsDisplay from "@/components/results-display";
 import LeadCaptureModal from "@/components/lead-capture-modal";
 import Footer from "@/components/footer";

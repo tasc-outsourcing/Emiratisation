@@ -14,15 +14,15 @@ import { MOHRE_SECTORS, REGULATED_SECTORS, type AssessmentInput } from "@shared/
 const formSchema = z.object({
   companyLocation: z.enum(["mainland", "freezone"]),
   industrySector: z.string().min(1, "Please select an industry sector"),
-  totalEmployees: z.number().min(1, "Must have at least 1 employee"),
-  skilledEmployees: z.number().min(1, "Must have at least 1 skilled employee"),
+  totalEmployees: z.coerce.number().min(1, "Must have at least 1 employee"),
+  skilledEmployees: z.coerce.number().min(1, "Must have at least 1 skilled employee"),
   partOfGroup: z.boolean(),
   groupOperatesMainland: z.boolean().optional(),
-  emiratiEmployees: z.number().min(0, "Cannot be negative"),
+  emiratiEmployees: z.coerce.number().min(0, "Cannot be negative"),
   emiratisInSkilledRoles: z.boolean(),
   wpsGpssaCompliant: z.boolean(),
   emiratiLeftRecently: z.boolean(),
-  departureDaysAgo: z.number().min(0).max(365).optional(),
+  departureDaysAgo: z.coerce.number().min(0).max(365).optional(),
 }).refine((data) => {
   return data.skilledEmployees <= data.totalEmployees;
 }, {
@@ -52,14 +52,10 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
     defaultValues: {
       companyLocation: undefined,
       industrySector: "",
-      totalEmployees: "" as any,
-      skilledEmployees: "" as any,
-      emiratiEmployees: 0,
       partOfGroup: false,
       emiratisInSkilledRoles: false,
       wpsGpssaCompliant: false,
       emiratiLeftRecently: false,
-      departureDaysAgo: "" as any,
     },
   });
 
@@ -71,19 +67,18 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Regulated Sector Warning */}
+    <div className="max-w-4xl mx-auto p-6 space-y-8">
       {isRegulatedSector && (
-        <Card className="border-tasc-yellow bg-yellow-50 card-tasc">
-          <CardContent className="pt-6">
+        <Card className="border-orange-200 bg-orange-50">
+          <CardContent className="p-6">
             <div className="text-center">
-              <h3 className="text-lg font-semibold text-tasc-primary mb-2">
+              <h3 className="text-lg font-semibold text-orange-800 mb-2">
                 ⚠️ Regulated Industry Notice
               </h3>
               <p className="text-gray-700 mb-4">
                 Are you in a regulated industry? Emiratisation targets may differ from MoHRE rules.
               </p>
-              <Button className="btn-cta">
+              <Button className="bg-[#FFC500] hover:bg-[#FFD700] text-black font-semibold">
                 📞 Book a Compliance Call
               </Button>
             </div>
@@ -101,14 +96,14 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 Company Profile
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6 space-y-6">
+            <CardContent className="p-8 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="companyLocation"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center">
+                    <FormItem className="space-y-3">
+                      <FormLabel className="flex items-center text-sm font-medium">
                         <MapPin className="h-4 w-4 mr-2" />
                         Company Location
                       </FormLabel>
@@ -137,8 +132,8 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                   control={form.control}
                   name="industrySector"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Industry Sector</FormLabel>
+                    <FormItem className="space-y-3">
+                      <FormLabel className="text-sm font-medium">Industry Sector</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -164,8 +159,8 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                   control={form.control}
                   name="totalEmployees"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center">
+                    <FormItem className="space-y-3">
+                      <FormLabel className="flex items-center text-sm font-medium">
                         <Users className="h-4 w-4 mr-2" />
                         Total Employees
                       </FormLabel>
@@ -175,7 +170,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                           min="1"
                           {...field}
                           value={field.value || ""}
-                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : "")}
                         />
                       </FormControl>
                       <FormMessage />
@@ -187,15 +182,15 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                   control={form.control}
                   name="skilledEmployees"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Skilled Employees</FormLabel>
+                    <FormItem className="space-y-3">
+                      <FormLabel className="text-sm font-medium">Skilled Employees</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           min="1"
                           {...field}
                           value={field.value || ""}
-                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : "")}
                         />
                       </FormControl>
                       <FormDescription>
@@ -211,8 +206,8 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 control={form.control}
                 name="partOfGroup"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Part of a Group?</FormLabel>
+                  <FormItem className="space-y-3">
+                    <FormLabel className="text-sm font-medium">Part of a Group?</FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
@@ -239,8 +234,8 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                   control={form.control}
                   name="groupOperatesMainland"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Do any group companies operate in Mainland?</FormLabel>
+                    <FormItem className="space-y-3">
+                      <FormLabel className="text-sm font-medium">Do any group companies operate in Mainland?</FormLabel>
                       <FormControl>
                         <RadioGroup
                           onValueChange={(value) => field.onChange(value === "true")}
@@ -273,20 +268,20 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 Emirati Workforce
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6 space-y-6">
+            <CardContent className="p-8 space-y-6">
               <FormField
                 control={form.control}
                 name="emiratiEmployees"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Number of Emiratis</FormLabel>
+                  <FormItem className="space-y-3">
+                    <FormLabel className="text-sm font-medium">Number of Emiratis</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         min="0"
                         {...field}
                         value={field.value || ""}
-                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : "")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -298,8 +293,8 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 control={form.control}
                 name="emiratisInSkilledRoles"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Are Emiratis in skilled roles?</FormLabel>
+                  <FormItem className="space-y-3">
+                    <FormLabel className="text-sm font-medium">Are Emiratis in skilled roles?</FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
@@ -325,8 +320,8 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 control={form.control}
                 name="wpsGpssaCompliant"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Are Emiratis WPS + GPSSA Compliant?</FormLabel>
+                  <FormItem className="space-y-3">
+                    <FormLabel className="text-sm font-medium">WPS & GPSSA Compliant?</FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
@@ -343,9 +338,6 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                         </div>
                       </RadioGroup>
                     </FormControl>
-                    <FormDescription>
-                      Workplace Protection Scheme + General Pension and Social Security Authority
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -355,8 +347,8 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 control={form.control}
                 name="emiratiLeftRecently"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Did any Emirati leave recently?</FormLabel>
+                  <FormItem className="space-y-3">
+                    <FormLabel className="text-sm font-medium">Has any Emirati left recently?</FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
@@ -383,8 +375,8 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                   control={form.control}
                   name="departureDaysAgo"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center">
+                    <FormItem className="space-y-3">
+                      <FormLabel className="flex items-center text-sm font-medium">
                         <Calendar className="h-4 w-4 mr-2" />
                         How many days ago did they leave?
                       </FormLabel>
@@ -395,7 +387,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                           max="365"
                           {...field}
                           value={field.value || ""}
-                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : "")}
                         />
                       </FormControl>
                       <FormDescription>
@@ -409,7 +401,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
             </CardContent>
           </Card>
 
-          <div className="text-center">
+          <div className="text-center pt-4">
             <Button type="submit" className="bg-[#FFC500] hover:bg-[#FFD700] text-black font-semibold px-8 py-3 text-lg">
               Calculate Risk Assessment
             </Button>
