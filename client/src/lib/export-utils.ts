@@ -140,7 +140,7 @@ export const exportToPDF = (assessment: Assessment) => {
 
   // Footer
   const pageHeight = doc.internal.pageSize.height;
-  doc.setFillColor(...yellow);
+  doc.setFillColor(yellow[0], yellow[1], yellow[2]);
   doc.rect(0, pageHeight - 25, 210, 25, 'F');
   
   doc.setTextColor(0, 0, 0);

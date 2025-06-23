@@ -220,18 +220,28 @@ For expert guidance on compliance strategies, contact TASC Outsourcing.
 
         <Card className="card-tasc border-tasc-teal">
           <CardContent className="pt-6 text-center">
-            <Download className="h-12 w-12 mx-auto mb-4 text-tasc-primary" />
-            <h3 className="text-lg font-semibold text-tasc-primary mb-2">Download Guide</h3>
+            <FileText className="h-12 w-12 mx-auto mb-4 text-tasc-primary" />
+            <h3 className="text-lg font-semibold text-tasc-primary mb-2">Export Report</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Get your detailed assessment report
+              Download your compliance assessment report
             </p>
-            <Button 
-              onClick={downloadGuide}
-              variant="outline" 
-              className="w-full border-tasc-teal text-tasc-teal hover:bg-tasc-teal hover:text-white"
-            >
-              Download Report
-            </Button>
+            <div className="space-y-2">
+              <Button 
+                onClick={() => exportToPDF(assessment)}
+                className="bg-[#004267] hover:bg-[#007FAD] text-white font-semibold w-full"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Download PDF
+              </Button>
+              <Button 
+                onClick={() => exportToExcel(assessment)}
+                variant="outline"
+                className="w-full border-[#004267] text-[#004267] hover:bg-[#004267] hover:text-white"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Download Excel
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
