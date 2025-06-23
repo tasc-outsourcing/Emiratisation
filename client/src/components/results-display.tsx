@@ -192,7 +192,10 @@ For expert guidance on compliance strategies, contact TASC Outsourcing.
             <p className="text-sm text-gray-600 mb-4">
               Get expert guidance on your compliance strategy
             </p>
-            <Button className="btn-cta w-full">
+            <Button 
+              className="btn-cta w-full"
+              onClick={() => window.open('https://calendly.com/nirbhay-tascoutsourcing/30-mins-emiratisation-strategy-session-clone', '_blank')}
+            >
               Schedule Consultation
             </Button>
           </CardContent>
@@ -205,8 +208,11 @@ For expert guidance on compliance strategies, contact TASC Outsourcing.
             <p className="text-sm text-gray-600 mb-4">
               Speak with our Emiratisation specialists
             </p>
-            <Button className="btn-primary w-full">
-              +971 4 XXX XXXX
+            <Button 
+              className="btn-primary w-full"
+              onClick={() => window.open('tel:+97143588500', '_self')}
+            >
+              +971 4 358 8500
             </Button>
           </CardContent>
         </Card>

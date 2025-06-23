@@ -20,20 +20,22 @@ export default function AssessmentPage() {
     if (!formData) return;
     
     const completeData: AssessmentInput = {
-      companyName: formData.companyName || leadData.company,
-      location: formData.location || "mainland",
+      companyLocation: formData.companyLocation || "mainland",
       industrySector: formData.industrySector || "Other",
       totalEmployees: formData.totalEmployees || 0,
+      skilledEmployees: formData.skilledEmployees || 0,
+      partOfGroup: formData.partOfGroup || false,
+      groupOperatesMainland: formData.groupOperatesMainland,
       emiratiEmployees: formData.emiratiEmployees || 0,
-      recentDepartures: formData.recentDepartures || "no",
-      departuresCount: formData.departuresCount || 0,
-      monthsSinceDeparture: formData.monthsSinceDeparture || 0,
-      hasRecruitmentPlan: formData.hasRecruitmentPlan || "no",
-      isRegulatedSector: formData.isRegulatedSector || "no",
-      contactName: leadData.name,
-      contactEmail: leadData.email,
-      contactPhone: leadData.phone,
-      contactCompany: leadData.company,
+      emiratisInSkilledRoles: formData.emiratisInSkilledRoles || false,
+      wpsGpssaCompliant: formData.wpsGpssaCompliant || false,
+      emiratiLeftRecently: formData.emiratiLeftRecently || false,
+      departureDaysAgo: formData.departureDaysAgo,
+      firstName: leadData.name.split(' ')[0] || leadData.name,
+      lastName: leadData.name.split(' ').slice(1).join(' ') || '',
+      email: leadData.email,
+      phone: leadData.phone,
+      companyName: leadData.company,
     };
 
     submitAssessment(completeData);
@@ -59,7 +61,7 @@ export default function AssessmentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       
       <main className="container mx-auto px-4 py-8 flex-1">
@@ -83,9 +85,15 @@ export default function AssessmentPage() {
         <LeadCaptureModal
           isOpen={showLeadCapture}
           onClose={() => setShowLeadCapture(false)}
-          onSubmit={handleLeadCapture}
+          onSubmit={(data) => handleLeadCapture({
+          name: `${data.firstName} ${data.lastName}`,
+          email: data.email,
+          phone: data.phone,
+          company: data.companyName
+        })}
         />
       </main>
+      <Footer />
     </div>
   );
 }

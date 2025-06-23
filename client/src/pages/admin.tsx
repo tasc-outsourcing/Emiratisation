@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import Footer from "@/components/footer";
 import type { Assessment, Configuration } from "@shared/schema";
 
 const authSchema = z.object({
@@ -238,7 +239,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <div className="bg-tasc-primary text-white py-6">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold">TASC Emiratisation - Admin Panel</h1>
@@ -246,7 +247,7 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 flex-1">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Statistics Cards */}
           <div className="lg:col-span-3">
