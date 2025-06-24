@@ -192,10 +192,20 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                       <FormControl>
                         <Input
                           type="number"
-                          min="1"
+                          min="0"
                           {...field}
-                          value={field.value || ""}
-                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : "")}
+                          value={field.value !== undefined ? String(field.value) : ""}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === "") {
+                              field.onChange(undefined);
+                            } else {
+                              const num = parseInt(val);
+                              if (!isNaN(num)) {
+                                field.onChange(num);
+                              }
+                            }
+                          }}
                         />
                       </FormControl>
                       <FormDescription>
@@ -225,10 +235,20 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                       <FormControl>
                         <Input
                           type="number"
-                          min="1"
+                          min="0"
                           {...field}
-                          value={field.value || ""}
-                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : "")}
+                          value={field.value !== undefined ? String(field.value) : ""}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === "") {
+                              field.onChange(undefined);
+                            } else {
+                              const num = parseInt(val);
+                              if (!isNaN(num)) {
+                                field.onChange(num);
+                              }
+                            }
+                          }}
                         />
                       </FormControl>
                       <FormDescription>
@@ -310,8 +330,18 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                         type="number"
                         min="0"
                         {...field}
-                        value={field.value || ""}
-                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : "")}
+                        value={field.value !== undefined ? String(field.value) : ""}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === "") {
+                            field.onChange(undefined);
+                          } else {
+                            const num = parseInt(val);
+                            if (!isNaN(num)) {
+                              field.onChange(num);
+                            }
+                          }
+                        }}
                       />
                     </FormControl>
                     <FormDescription>
@@ -411,8 +441,18 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                           min="0"
                           max="365"
                           {...field}
-                          value={field.value || ""}
-                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : "")}
+                          value={field.value !== undefined ? String(field.value) : ""}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === "") {
+                              field.onChange(undefined);
+                            } else {
+                              const num = parseInt(val);
+                              if (!isNaN(num)) {
+                                field.onChange(num);
+                              }
+                            }
+                          }}
                         />
                       </FormControl>
                       <FormDescription>
