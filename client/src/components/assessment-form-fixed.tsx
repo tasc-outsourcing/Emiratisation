@@ -43,12 +43,14 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      companyLocation: undefined,
+      companyLocation: "mainland",
       industrySector: "",
-      partOfGroup: false,
-      emiratisInSkilledRoles: false,
+      totalEmployees: undefined,
+      skilledEmployees: undefined,
+      emiratiEmployees: undefined,
       wpsGpssaCompliant: false,
       emiratiLeftRecently: false,
+      departureDaysAgo: undefined,
     },
   });
 
@@ -228,7 +230,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                         />
                       </FormControl>
                       <FormDescription>
-                        Professionals, managers, specialists
+                        Enter number of employees in skilled roles (managers, professionals, specialists)
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -352,7 +354,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                       </RadioGroup>
                     </FormControl>
                     <FormDescription>
-                      Check if any Emirati employees have left in the past 3 months
+                      Indicate if any Emirati employees have departed in the past 3 months
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
