@@ -10,11 +10,11 @@ export default function Header() {
         backgroundImage: `url(${headerBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        minHeight: '300px'
+        minHeight: '400px'
       }}
     >
       <div className="absolute inset-0 bg-[#004267] bg-opacity-70"></div>
-      <div className="container mx-auto px-6 md:px-4 relative z-10 h-full flex flex-col justify-center py-8 md:py-12">
+      <div className="container mx-auto px-6 md:px-4 relative z-10 h-full flex flex-col justify-center py-12 md:py-12">
         {/* Desktop: Logo in top left, Button in top right */}
         <div className="hidden md:block absolute top-6 left-6">
           <img 
@@ -39,7 +39,7 @@ export default function Header() {
             <img 
               src={tascLogo} 
               alt="TASC Outsourcing" 
-              className="h-16 mx-auto mb-4"
+              className="h-6 mx-auto mb-4"
             />
           </div>
           
