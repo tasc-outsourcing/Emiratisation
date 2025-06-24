@@ -83,6 +83,7 @@ export class DatabaseStorage implements IStorage {
       totalEmployees,
       skilledEmployees,
       emiratiEmployees,
+      nafisRegistered,
       wpsGpssaCompliant,
       emiratiLeftRecently,
       departureDaysAgo,
@@ -102,12 +103,12 @@ export class DatabaseStorage implements IStorage {
 
     // Step 2: Calculate valid Emiratis (assumes all Emiratis are in skilled roles)
     let validEmirates = 0;
-    if (wpsGpssaCompliant) {
+    if (wpsGpssaCompliant === "yes") {
       validEmirates = emiratiEmployees;
     }
 
-    // Grace period for recent departures
-    if (emiratiLeftRecently && departureDaysAgo !== undefined && departureDaysAgo <= 90) {
+    // Grace period for recent departures (treat "not_sure" same as "yes" for conservative approach)
+    if ((emiratiLeftRecently === "yes" || emiratiLeftRecently === "not_sure") && departureDaysAgo !== undefined && departureDaysAgo <= 90) {
       validEmirates += 1;
     }
 

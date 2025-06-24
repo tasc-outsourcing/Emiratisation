@@ -53,6 +53,24 @@ A lead-generation microtool for TASC Outsourcing that calculates UAE Emiratisati
 
 ## Recent Changes
 
+### June 24, 2025
+- **Mobile Experience Improvements**: Enhanced mobile responsiveness and user experience
+  - Fixed mobile padding issues for header logo and buttons
+  - Repositioned logo to top-left on desktop (50% smaller), centered on mobile
+  - Added proper padding throughout mobile interface
+  
+- **Form Simplification**: Streamlined assessment form structure and logic
+  - Changed company location from radio buttons to dropdown with descriptive options
+  - Removed group company questions to simplify user flow
+  - Added explanatory descriptions to all form fields for better user guidance
+  - Changed 'Skilled Employees' to 'Number of Skilled Employees' for clarity
+  - Removed 'Are Emiratis in skilled roles' question (now assumes all are skilled)
+  
+- **Backend Updates**: Updated schema and logic to match simplified form
+  - Removed group-related fields from database schema
+  - Updated risk calculation to assume all Emiratis are in skilled roles
+  - Simplified storage interface and validation logic
+
 ### December 22, 2024
 - **Initial Implementation**: Built complete TASC Emiratisation Risk Assessment Tool from specifications
   - Implemented full assessment form with conditional logic

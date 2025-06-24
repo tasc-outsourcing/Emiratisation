@@ -15,11 +15,12 @@ import { MOHRE_SECTORS, REGULATED_SECTORS, type AssessmentInput } from "@shared/
 const formSchema = z.object({
   companyLocation: z.enum(["mainland", "freezone"]),
   industrySector: z.string().min(1, "Please select an industry sector"),
-  totalEmployees: z.coerce.number().min(1, "Must have at least 1 employee"),
-  skilledEmployees: z.coerce.number().min(1, "Must have at least 1 skilled employee"),
+  totalEmployees: z.coerce.number().min(0, "Cannot be negative"),
+  skilledEmployees: z.coerce.number().min(0, "Cannot be negative"),
   emiratiEmployees: z.coerce.number().min(0, "Cannot be negative"),
-  wpsGpssaCompliant: z.boolean(),
-  emiratiLeftRecently: z.boolean(),
+  nafisRegistered: z.enum(["yes", "no", "not_sure"]),
+  wpsGpssaCompliant: z.enum(["yes", "no", "not_sure"]),
+  emiratiLeftRecently: z.enum(["yes", "no", "not_sure"]),
   departureDaysAgo: z.coerce.number().min(0).max(365).optional(),
 }).refine((data) => {
   return data.skilledEmployees <= data.totalEmployees;
@@ -27,7 +28,7 @@ const formSchema = z.object({
   message: "Skilled employees cannot exceed total employees",
   path: ["skilledEmployees"],
 }).refine((data) => {
-  return !data.emiratiLeftRecently || data.departureDaysAgo !== undefined;
+  return data.emiratiLeftRecently !== "yes" || data.departureDaysAgo !== undefined;
 }, {
   message: "Please specify when the Emirati left",
   path: ["departureDaysAgo"],
@@ -48,8 +49,9 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
       totalEmployees: undefined,
       skilledEmployees: undefined,
       emiratiEmployees: undefined,
-      wpsGpssaCompliant: false,
-      emiratiLeftRecently: false,
+      nafisRegistered: "not_sure",
+      wpsGpssaCompliant: "not_sure",
+      emiratiLeftRecently: "not_sure",
       departureDaysAgo: undefined,
     },
   });
@@ -238,6 +240,42 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 />
               </div>
 
+              {/* Nafis Portal Registration */}
+              <FormField
+                control={form.control}
+                name="nafisRegistered"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel className="flex items-center text-sm font-medium">
+                      Is your company registered with the Nafis Portal?
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <p>Nafis Portal registration may provide benefits for Emiratisation compliance and recruitment support.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select registration status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="yes">Yes</SelectItem>
+                        <SelectItem value="no">No</SelectItem>
+                        <SelectItem value="not_sure">Not Sure</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      Select your Nafis Portal registration status
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
             </CardContent>
           </Card>
@@ -337,22 +375,18 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                         </TooltipContent>
                       </Tooltip>
                     </FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={(value) => field.onChange(value === "true")}
-                        value={field.value ? "true" : "false"}
-                        className="flex space-x-6"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="left-yes" />
-                          <Label htmlFor="left-yes">Yes</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="left-no" />
-                          <Label htmlFor="left-no">No</Label>
-                        </div>
-                      </RadioGroup>
-                    </FormControl>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select departure status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="yes">Yes</SelectItem>
+                        <SelectItem value="no">No</SelectItem>
+                        <SelectItem value="not_sure">Not Sure</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormDescription>
                       Indicate if any Emirati employees have departed in the past 3 months
                     </FormDescription>
@@ -361,7 +395,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 )}
               />
 
-              {watchedValues.emiratiLeftRecently && (
+              {watchedValues.emiratiLeftRecently === "yes" && (
                 <FormField
                   control={form.control}
                   name="departureDaysAgo"

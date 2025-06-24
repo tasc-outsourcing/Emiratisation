@@ -13,8 +13,9 @@ export const assessments = pgTable("assessments", {
   
   // Emirati workforce
   emiratiEmployees: integer("emirati_employees").notNull(),
-  wpsGpssaCompliant: boolean("wps_gpssa_compliant").notNull(),
-  emiratiLeftRecently: boolean("emirati_left_recently").notNull(),
+  nafisRegistered: text("nafis_registered").notNull(), // 'yes' | 'no' | 'not_sure'
+  wpsGpssaCompliant: text("wps_gpssa_compliant").notNull(), // 'yes' | 'no' | 'not_sure'
+  emiratiLeftRecently: text("emirati_left_recently").notNull(), // 'yes' | 'no' | 'not_sure'
   departureDaysAgo: integer("departure_days_ago"),
   
   // Lead capture
