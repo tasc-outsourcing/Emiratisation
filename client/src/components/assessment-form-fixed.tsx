@@ -274,43 +274,9 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                         onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : "")}
                       />
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="emiratisInSkilledRoles"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="flex items-center text-sm font-medium">
-                      Are Emiratis in skilled roles?
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-xs">
-                          <p>Emiratisation quotas only count Emiratis working in skilled positions like managers, sales, tech, or admin.</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={(value) => field.onChange(value === "true")}
-                        value={field.value ? "true" : "false"}
-                        className="flex space-x-6"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="skilled-yes" />
-                          <Label htmlFor="skilled-yes">Yes</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="skilled-no" />
-                          <Label htmlFor="skilled-no">No</Label>
-                        </div>
-                      </RadioGroup>
-                    </FormControl>
+                    <FormDescription>
+                      Enter the number of UAE Nationals currently employed
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -385,6 +351,9 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                         </div>
                       </RadioGroup>
                     </FormControl>
+                    <FormDescription>
+                      Check if any Emirati employees have left in the past 3 months
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

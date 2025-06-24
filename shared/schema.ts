@@ -10,12 +10,9 @@ export const assessments = pgTable("assessments", {
   industrySector: text("industry_sector").notNull(),
   totalEmployees: integer("total_employees").notNull(),
   skilledEmployees: integer("skilled_employees").notNull(),
-  partOfGroup: boolean("part_of_group").notNull(),
-  groupOperatesMainland: boolean("group_operates_mainland"),
   
   // Emirati workforce
   emiratiEmployees: integer("emirati_employees").notNull(),
-  emiratisInSkilledRoles: boolean("emiratis_in_skilled_roles").notNull(),
   wpsGpssaCompliant: boolean("wps_gpssa_compliant").notNull(),
   emiratiLeftRecently: boolean("emirati_left_recently").notNull(),
   departureDaysAgo: integer("departure_days_ago"),

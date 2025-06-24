@@ -82,10 +82,7 @@ export class DatabaseStorage implements IStorage {
       industrySector,
       totalEmployees,
       skilledEmployees,
-      partOfGroup,
-      groupOperatesMainland,
       emiratiEmployees,
-      emiratisInSkilledRoles,
       wpsGpssaCompliant,
       emiratiLeftRecently,
       departureDaysAgo,
@@ -103,9 +100,9 @@ export class DatabaseStorage implements IStorage {
       requiredEmirates = Math.ceil((skilledEmployees * targetPercent) / 100);
     }
 
-    // Step 2: Calculate valid Emiratis
+    // Step 2: Calculate valid Emiratis (assumes all Emiratis are in skilled roles)
     let validEmirates = 0;
-    if (wpsGpssaCompliant && emiratisInSkilledRoles) {
+    if (wpsGpssaCompliant) {
       validEmirates = emiratiEmployees;
     }
 
