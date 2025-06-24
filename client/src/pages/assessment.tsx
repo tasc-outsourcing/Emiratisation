@@ -29,11 +29,11 @@ export default function AssessmentPage() {
       wpsGpssaCompliant: formData.wpsGpssaCompliant || "not_sure",
       emiratiLeftRecently: formData.emiratiLeftRecently || "not_sure",
       departureDaysAgo: formData.departureDaysAgo,
-      firstName: leadData.firstName,
-      lastName: leadData.lastName,
-      email: leadData.email,
-      phone: leadData.phone,
-      companyName: leadData.companyName,
+      firstName: leadData.firstName || "",
+      lastName: leadData.lastName || "",
+      email: leadData.email || "",
+      phone: leadData.phone || "",
+      companyName: leadData.companyName || "",
     };
 
     submitAssessment(completeData);
@@ -83,12 +83,7 @@ export default function AssessmentPage() {
         <LeadCaptureModal
           isOpen={showLeadCapture}
           onClose={() => setShowLeadCapture(false)}
-          onSubmit={(data) => handleLeadCapture({
-          name: `${data.firstName} ${data.lastName}`,
-          email: data.email,
-          phone: data.phone,
-          company: data.companyName
-        })}
+          onSubmit={handleLeadCapture}
         />
       </main>
       <Footer />
