@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Building, Users, MapPin, Calendar, Info } from "lucide-react";
+import { Building, Users, MapPin, Calendar, Info, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -61,8 +62,15 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
   const watchedValues = form.watch();
   const isRegulatedSector = watchedValues.industrySector && REGULATED_SECTORS.includes(watchedValues.industrySector as any);
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
+    setIsSubmitting(true);
+    console.log("Form submitted:", data);
+    
+    // Simulate processing time for better UX
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     onComplete(data);
+    setIsSubmitting(false);
   };
 
   return (

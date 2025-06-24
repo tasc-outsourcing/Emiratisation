@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { User, Mail, Phone, Building } from "lucide-react";
+import { User, Mail, Phone, Building, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -157,9 +158,17 @@ export default function LeadCaptureModal({ isOpen, onClose, onSubmit }: LeadCapt
               </Button>
               <Button
                 type="submit"
-                className="flex-1 btn-primary"
+                disabled={isSubmitting}
+                className="flex-1 btn-primary disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Get My Assessment
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  "Get My Assessment"
+                )}
               </Button>
             </div>
           </form>
