@@ -41,6 +41,8 @@ interface AssessmentFormProps {
 }
 
 export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {

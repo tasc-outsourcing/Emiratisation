@@ -24,6 +24,8 @@ interface LeadCaptureModalProps {
 }
 
 export default function LeadCaptureModal({ isOpen, onClose, onSubmit }: LeadCaptureModalProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const form = useForm<LeadFormData>({
     resolver: zodResolver(leadSchema),
     defaultValues: {
@@ -35,9 +37,15 @@ export default function LeadCaptureModal({ isOpen, onClose, onSubmit }: LeadCapt
     },
   });
 
-  const handleSubmit = (data: LeadFormData) => {
+  const handleSubmit = async (data: LeadFormData) => {
+    setIsSubmitting(true);
+    
+    // Simulate processing time for better UX
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
     onSubmit(data);
     form.reset();
+    setIsSubmitting(false);
   };
 
   return (
