@@ -50,16 +50,14 @@ export const assessmentInputSchema = z.object({
   // Company profile
   companyLocation: z.enum(["mainland", "freezone"]),
   industrySector: z.string().min(1, "Please select an industry sector"),
-  totalEmployees: z.number().min(1, "Must have at least 1 employee"),
-  skilledEmployees: z.number().min(1, "Must have at least 1 skilled employee"),
-  partOfGroup: z.boolean(),
-  groupOperatesMainland: z.boolean().optional(),
+  totalEmployees: z.number().min(0, "Cannot be negative"),
+  skilledEmployees: z.number().min(0, "Cannot be negative"),
   
   // Emirati workforce
   emiratiEmployees: z.number().min(0, "Cannot be negative"),
-  emiratisInSkilledRoles: z.boolean(),
-  wpsGpssaCompliant: z.boolean(),
-  emiratiLeftRecently: z.boolean(),
+  nafisRegistered: z.enum(["yes", "no", "not_sure"]),
+  wpsGpssaCompliant: z.enum(["yes", "no", "not_sure"]),
+  emiratiLeftRecently: z.enum(["yes", "no", "not_sure"]),
   departureDaysAgo: z.number().min(0).max(365).optional(),
   
   // Lead capture
@@ -74,12 +72,7 @@ export const assessmentInputSchema = z.object({
   message: "Skilled employees cannot exceed total employees",
   path: ["skilledEmployees"],
 }).refine((data) => {
-  return !data.partOfGroup || data.groupOperatesMainland !== undefined;
-}, {
-  message: "Please specify if group operates in mainland",
-  path: ["groupOperatesMainland"],
-}).refine((data) => {
-  return !data.emiratiLeftRecently || data.departureDaysAgo !== undefined;
+  return data.emiratiLeftRecently !== "yes" || data.departureDaysAgo !== undefined;
 }, {
   message: "Please specify when the Emirati left",
   path: ["departureDaysAgo"],
