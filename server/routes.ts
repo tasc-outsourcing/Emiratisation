@@ -17,8 +17,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Assessment routes
   app.post("/api/assessments", async (req, res) => {
     try {
+      console.log("Received assessment data:", req.body);
       const result = assessmentInputSchema.safeParse(req.body);
       if (!result.success) {
+        console.error("Validation errors:", result.error.issues);
         return res.status(400).json({ 
           message: "Invalid assessment data", 
           errors: result.error.issues 

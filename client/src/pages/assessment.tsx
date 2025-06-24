@@ -16,7 +16,7 @@ export default function AssessmentPage() {
     setShowLeadCapture(true);
   };
 
-  const handleLeadCapture = (leadData: { name: string; email: string; phone: string; company: string }) => {
+  const handleLeadCapture = (leadData: { firstName: string; lastName: string; email: string; phone: string; companyName: string }) => {
     if (!formData) return;
     
     const completeData: AssessmentInput = {
@@ -24,18 +24,16 @@ export default function AssessmentPage() {
       industrySector: formData.industrySector || "Other",
       totalEmployees: formData.totalEmployees || 0,
       skilledEmployees: formData.skilledEmployees || 0,
-      partOfGroup: formData.partOfGroup || false,
-      groupOperatesMainland: formData.groupOperatesMainland,
       emiratiEmployees: formData.emiratiEmployees || 0,
-      emiratisInSkilledRoles: formData.emiratisInSkilledRoles || false,
-      wpsGpssaCompliant: formData.wpsGpssaCompliant || false,
-      emiratiLeftRecently: formData.emiratiLeftRecently || false,
+      nafisRegistered: formData.nafisRegistered || "not_sure",
+      wpsGpssaCompliant: formData.wpsGpssaCompliant || "not_sure",
+      emiratiLeftRecently: formData.emiratiLeftRecently || "not_sure",
       departureDaysAgo: formData.departureDaysAgo,
-      firstName: leadData.name.split(' ')[0] || leadData.name,
-      lastName: leadData.name.split(' ').slice(1).join(' ') || '',
+      firstName: leadData.firstName,
+      lastName: leadData.lastName,
       email: leadData.email,
       phone: leadData.phone,
-      companyName: leadData.company,
+      companyName: leadData.companyName,
     };
 
     submitAssessment(completeData);
