@@ -324,14 +324,14 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 name="emiratiEmployees"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel className="flex items-center text-sm font-medium">
+                    <FormLabel className="text-base font-medium flex items-center gap-2">
                       Number of Emiratis
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
+                          <Info className="h-4 w-4 text-gray-400 cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent className="max-w-xs">
-                          <p>How many UAE Nationals are currently employed in your company?</p>
+                          <p>UAE Nationals currently employed in your company</p>
                         </TooltipContent>
                       </Tooltip>
                     </FormLabel>
@@ -367,33 +367,29 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 name="wpsGpssaCompliant"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel className="flex items-center text-sm font-medium">
+                    <FormLabel className="text-base font-medium flex items-center gap-2">
                       WPS & GPSSA Compliant?
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
+                          <Info className="h-4 w-4 text-gray-400 cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent className="max-w-xs">
-                          <p>This means the Emiratis are paid via the official Wages Protection System and registered for pension under GPSSA. Both are required for compliance.</p>
+                          <p>Wages Protection System and pension registration status</p>
                         </TooltipContent>
                       </Tooltip>
                     </FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={(value) => field.onChange(value === "true")}
-                        value={field.value ? "true" : "false"}
-                        className="flex space-x-6"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="compliant-yes" />
-                          <Label htmlFor="compliant-yes">Yes</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="compliant-no" />
-                          <Label htmlFor="compliant-no">No</Label>
-                        </div>
-                      </RadioGroup>
-                    </FormControl>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select compliance status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="yes">Yes</SelectItem>
+                        <SelectItem value="no">No</SelectItem>
+                        <SelectItem value="not_sure">Not Sure</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -404,14 +400,14 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 name="emiratiLeftRecently"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel className="flex items-center text-sm font-medium">
-                      Has any Emirati left recently?
+                    <FormLabel className="text-base font-medium flex items-center gap-2">
+                      Have any Emiratis left within the last 90 days?
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
+                          <Info className="h-4 w-4 text-gray-400 cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent className="max-w-xs">
-                          <p>If an Emirati employee left recently, you may still be within MoHRE's grace period to replace them without penalty. Enter the most recent date of departure.</p>
+                          <p>Recent departures within 90-day grace period</p>
                         </TooltipContent>
                       </Tooltip>
                     </FormLabel>
@@ -441,9 +437,8 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                   name="departureDaysAgo"
                   render={({ field }) => (
                     <FormItem className="space-y-3">
-                      <FormLabel className="flex items-center text-sm font-medium">
-                        <Calendar className="h-4 w-4 mr-2" />
-                        How many days ago did they leave?
+                      <FormLabel className="text-base font-medium flex items-center gap-2">
+                        How many Emiratis left within the last 90 days?
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -466,7 +461,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                         />
                       </FormControl>
                       <FormDescription>
-                        90-day grace period applies for recent departures
+                        Count toward compliance but must be replaced within grace period
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
