@@ -17,10 +17,7 @@ const formSchema = z.object({
   industrySector: z.string().min(1, "Please select an industry sector"),
   totalEmployees: z.coerce.number().min(1, "Must have at least 1 employee"),
   skilledEmployees: z.coerce.number().min(1, "Must have at least 1 skilled employee"),
-  partOfGroup: z.boolean(),
-  groupOperatesMainland: z.boolean().optional(),
   emiratiEmployees: z.coerce.number().min(0, "Cannot be negative"),
-  emiratisInSkilledRoles: z.boolean(),
   wpsGpssaCompliant: z.boolean(),
   emiratiLeftRecently: z.boolean(),
   departureDaysAgo: z.coerce.number().min(0).max(365).optional(),
@@ -29,11 +26,6 @@ const formSchema = z.object({
 }, {
   message: "Skilled employees cannot exceed total employees",
   path: ["skilledEmployees"],
-}).refine((data) => {
-  return !data.partOfGroup || data.groupOperatesMainland !== undefined;
-}, {
-  message: "Please specify if group operates in mainland",
-  path: ["groupOperatesMainland"],
 }).refine((data) => {
   return !data.emiratiLeftRecently || data.departureDaysAgo !== undefined;
 }, {
@@ -69,7 +61,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
 
   return (
     <TooltipProvider>
-      <div className="max-w-4xl mx-auto p-6 space-y-8">
+      <div className="max-w-4xl mx-auto p-6 md:p-6 px-4 space-y-8">
         {isRegulatedSector && (
         <Card className="border-orange-200 bg-orange-50">
           <CardContent className="p-6">
@@ -117,22 +109,20 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                           </TooltipContent>
                         </Tooltip>
                       </FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          value={field.value}
-                          className="flex space-x-6"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="mainland" id="mainland" />
-                            <Label htmlFor="mainland">Mainland</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="freezone" id="freezone" />
-                            <Label htmlFor="freezone">Free Zone</Label>
-                          </div>
-                        </RadioGroup>
-                      </FormControl>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select company location" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="mainland">UAE Mainland</SelectItem>
+                          <SelectItem value="freezone">Free Zone (DMCC, DIFC, JAFZA, etc.)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Only mainland companies are subject to Emiratisation requirements
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -157,7 +147,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select your industry" />
+                            <SelectValue placeholder="Select your industry sector" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -168,6 +158,9 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                           ))}
                         </SelectContent>
                       </Select>
+                      <FormDescription>
+                        Choose the main industry your company operates in
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -201,6 +194,9 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                           onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : "")}
                         />
                       </FormControl>
+                      <FormDescription>
+                        Enter your company's total headcount across all departments
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -212,7 +208,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                   render={({ field }) => (
                     <FormItem className="space-y-3">
                       <FormLabel className="flex items-center text-sm font-medium">
-                        Skilled Employees
+                        Number of Skilled Employees
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
@@ -240,81 +236,7 @@ export default function AssessmentForm({ onComplete }: AssessmentFormProps) {
                 />
               </div>
 
-              <FormField
-                control={form.control}
-                name="partOfGroup"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="flex items-center text-sm font-medium">
-                      Part of a Group?
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-xs">
-                          <p>If your company is owned by or affiliated with a larger group of companies, select 'Yes.'</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={(value) => field.onChange(value === "true")}
-                        value={field.value ? "true" : "false"}
-                        className="flex space-x-6"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="group-yes" />
-                          <Label htmlFor="group-yes">Yes</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="group-no" />
-                          <Label htmlFor="group-no">No</Label>
-                        </div>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
-              {watchedValues.partOfGroup && (
-                <FormField
-                  control={form.control}
-                  name="groupOperatesMainland"
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel className="flex items-center text-sm font-medium">
-                        Do any group companies operate in Mainland?
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Info className="h-4 w-4 ml-2 text-gray-400 cursor-help" />
-                          </TooltipTrigger>
-                          <TooltipContent className="max-w-xs">
-                            <p>If any entities in your group are mainland-licensed, they may be subject to Emiratisation laws—even if your company is exempt.</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={(value) => field.onChange(value === "true")}
-                          value={field.value ? "true" : "false"}
-                          className="flex space-x-6"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="true" id="mainland-yes" />
-                            <Label htmlFor="mainland-yes">Yes</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="false" id="mainland-no" />
-                            <Label htmlFor="mainland-no">No</Label>
-                          </div>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
             </CardContent>
           </Card>
 
